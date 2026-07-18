@@ -35,7 +35,7 @@ def parse_frontmatter(markdown: str) -> dict[str, str]:
 
 
 def validate_metadata() -> None:
-    skill = read("justify/SKILL.md")
+    skill = read("skills/justify/SKILL.md")
     fields = parse_frontmatter(skill)
     require(
         set(fields) == {"name", "description"},
@@ -50,7 +50,7 @@ def validate_metadata() -> None:
         len(fields["description"]) <= 500, "description must be at most 500 characters"
     )
 
-    metadata = read("justify/agents/openai.yaml")
+    metadata = read("skills/justify/agents/openai.yaml")
     require('display_name: "Justify"' in metadata, "Codex display_name is missing")
     require(
         re.search(r'^  short_description: ".{25,64}"$', metadata, flags=re.MULTILINE)
@@ -75,14 +75,14 @@ def validate_discovery() -> None:
         if ".git" not in path.parts
     ]
     require(
-        skill_files == ["justify/SKILL.md"],
+        skill_files == ["skills/justify/SKILL.md"],
         f"unexpected skill discovery set: {skill_files}",
     )
     print("ok: discovery")
 
 
 def validate_behavior_contract() -> None:
-    skill = read("justify/SKILL.md").lower()
+    skill = read("skills/justify/SKILL.md").lower()
     scenarios = {
         "audit": (
             "audit the target",
@@ -130,6 +130,10 @@ def validate_repository_support() -> None:
     )
     require("v*.*.*" in workflow, "release workflow must use semantic version tags")
     require("scripts/validate.py" in workflow, "release workflow must run validation")
+    require(
+        "cp -R skills/justify/. dist/staging/justify/" in workflow,
+        "release workflow must package skills/justify as justify",
+    )
     require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",

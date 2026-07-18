@@ -58,7 +58,7 @@ jobs:
         run: |
           archive="justify-${GITHUB_REF_NAME}"
           mkdir -p dist/staging/justify
-          cp -R justify/. dist/staging/justify/
+          cp -R skills/justify/. dist/staging/justify/
           cp README.md LICENSE dist/staging/justify/
           tar -C dist/staging -czf "dist/${archive}.tar.gz" justify
           (cd dist/staging && zip -qr "../${archive}.zip" justify)
