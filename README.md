@@ -16,7 +16,33 @@ Codex:
 npx skills add engineersamuel/skills --skill justify --agent codex
 ```
 
+These unversioned installs track `main` and are the recommended path.
+
 Invoke it with `/justify` in Claude Code or `$justify` in Codex. Give it a prior claim or decision to audit, for example: `Use $justify to audit the recommendation above.`
+
+## Upgrade
+
+Upgrade the project installation:
+
+```bash
+npx skills update justify -p
+```
+
+Upgrade the global installation:
+
+```bash
+npx skills update justify -g
+```
+
+## Pinned install
+
+For a reproducible install, pin a release tag:
+
+```bash
+npx skills add 'engineersamuel/skills#v1.0.0' --skill justify --agent codex
+```
+
+Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `skills update` preserves the existing tag.
 
 ## Requirements
 
