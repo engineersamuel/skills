@@ -12,7 +12,7 @@ npx skills@latest add engineersamuel/skills
 
 Select `justify` and the coding agents where you want it installed.
 
-Run `/justify` in Claude Code or `$justify` in Codex. Give it a claim, recommendation, plan, or decision to audit, for example: `Use $justify to audit the recommendation above.`
+Run `/justify`, `$justify`, or `$skills:justify` depending on your coding harness. Give it a claim, recommendation, plan, or decision to audit, for example: `Use $justify to audit the recommendation above.`
 
 It will:
 
