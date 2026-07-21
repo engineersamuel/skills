@@ -2,7 +2,30 @@
 
 `justify` is a cross-harness Agent Skill for auditing claims, recommendations, plans, and decisions. It checks local evidence, researches external claims with Exa when needed, and uses a council for consequential or contested judgment calls.
 
-## Install
+**Use `justify` as an evidence-based go/no-go check on your current worktree: are these changes applicable, valuable, and worth moving forward with?**
+
+## Quickstart (30-second setup)
+
+Run the skills.sh installer:
+
+```bash
+npx skills@latest add engineersamuel/skills
+```
+
+Select `justify` and the coding agents where you want it installed.
+
+Run `/justify`, `$justify`, or `$skills:justify` depending on your coding harness. Give it a claim, recommendation, plan, or decision to audit, for example: `Use $justify to audit the recommendation above.`
+
+It will:
+
+- Audit the target against primary evidence.
+- Research current external claims with Exa when needed.
+- Convene a real council for consequential or contested judgments.
+- Report a verdict, calibrated confidence, claim ledger, citations, and dissent.
+
+You’re ready to pressure-test your next claim or decision.
+
+## Direct install
 
 Claude Code:
 
@@ -17,8 +40,6 @@ npx skills add engineersamuel/skills --skill justify --agent codex
 ```
 
 These unversioned installs track `main` and are the recommended path.
-
-Invoke it with `/justify` in Claude Code or `$justify` in Codex. Give it a prior claim or decision to audit, for example: `Use $justify to audit the recommendation above.`
 
 ## Upgrade
 
