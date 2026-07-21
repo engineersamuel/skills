@@ -2,6 +2,8 @@
 
 `justify` is a cross-harness Agent Skill for auditing claims, recommendations, plans, and decisions. It checks local evidence, researches external claims with Exa when needed, and uses a council for consequential or contested judgment calls.
 
+**Use `justify` as an evidence-based go/no-go check on your current worktree: are these changes applicable, valuable, and worth moving forward with?**
+
 ## Quickstart (30-second setup)
 
 Run the skills.sh installer:
