@@ -75,7 +75,11 @@ def validate_discovery() -> None:
         if ".git" not in path.parts
     ]
     require(
-        skill_files == ["skills/justify/SKILL.md"],
+        skill_files
+        == [
+            "skills/grilling-frontend-prototyping/SKILL.md",
+            "skills/justify/SKILL.md",
+        ],
         f"unexpected skill discovery set: {skill_files}",
     )
     print("ok: discovery")
