@@ -59,11 +59,8 @@ def validate_metadata() -> None:
     )
     require("$justify" in metadata, "Codex default_prompt must mention $justify")
     require(
-        'value: "exa"' in metadata, "Codex metadata must declare the Exa dependency"
-    )
-    require(
-        "https://mcp.exa.ai/mcp" in metadata,
-        "Codex metadata must declare the Exa endpoint",
+        "dependencies:" not in metadata,
+        "Codex metadata must not require a provider-specific research dependency",
     )
     print("ok: metadata")
 
@@ -93,9 +90,10 @@ def validate_behavior_contract() -> None:
             "primary evidence",
             "claim ledger",
         ),
-        "exa": (
+        "external research": (
             "research external claims",
-            "exa",
+            "available web search or research capability",
+            "do not require a specific provider",
             "cite",
         ),
         "council": (

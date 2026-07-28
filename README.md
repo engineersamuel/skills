@@ -1,6 +1,6 @@
 # justify
 
-`justify` is a cross-harness Agent Skill for auditing claims, recommendations, plans, and decisions. It checks local evidence, researches external claims with Exa when needed, and uses a council for consequential or contested judgment calls.
+`justify` is a cross-harness Agent Skill for auditing claims, recommendations, plans, and decisions. It checks local evidence, researches external claims with an available search or research tool when needed, and uses a council for consequential or contested judgment calls.
 
 **Use `justify` as an evidence-based go/no-go check on your current worktree: are these changes applicable, valuable, and worth moving forward with?**
 
@@ -19,7 +19,7 @@ Run `/justify`, `$justify`, or `$skills:justify` depending on your coding harnes
 It will:
 
 - Audit the target against primary evidence.
-- Research current external claims with Exa when needed.
+- Research current external claims with an available search or research tool when needed.
 - Convene a real council for consequential or contested judgments.
 - Report a verdict, calibrated confidence, claim ledger, citations, and dissent.
 
@@ -67,7 +67,7 @@ Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `s
 
 ## Requirements
 
-Local repository audits need no extra integration. External claims require Exa MCP or an equivalent primary-source research tool; the Codex metadata declares the Exa endpoint. Consequential or contested judgments require an installed `council` skill or equivalent deliberation workflow with independent live members.
+Local repository audits need no extra integration. External claims require an available web search or research capability, such as Exa, Perplexity, Tavily, Firecrawl, or another equivalent tool. No specific provider is required. Consequential or contested judgments require an installed `council` skill or equivalent deliberation workflow with independent live members.
 
 `justify` fails closed when a required capability is absent. It reports the missing pass instead of fabricating research or simulated council output.
 
@@ -79,7 +79,7 @@ npx skills add . --list
 go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
 ```
 
-Validation checks Agent Skills metadata, Codex UI metadata, discovery, the audit/Exa/council/failure contract lint, and release support. Forward tests with fresh agents verify behavioral compliance.
+Validation checks Agent Skills metadata, Codex UI metadata, discovery, the audit/external-research/council/failure contract lint, and release support. Forward tests with fresh agents verify behavioral compliance.
 
 ## Release
 

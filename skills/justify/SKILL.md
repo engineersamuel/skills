@@ -17,7 +17,7 @@ Treat justification as an evidence audit, not a more persuasive restatement. Ear
 | Target depends on | Required pass |
 | --- | --- |
 | Repository state, an artifact, or claimed completed work | Audit the target against local primary evidence. |
-| Public, current, comparative, or externally verifiable facts | Research external claims with Exa. |
+| Public, current, comparative, or externally verifiable facts | Research external claims with an available web search or research tool. |
 | A consequential, contested, or preference-sensitive judgment | Convene the council after the evidence pass. |
 
 ## Audit the target
@@ -34,9 +34,9 @@ Call an inference an inference. Passing tests support only what those tests exer
 
 ## Research external claims
 
-Use Exa MCP for claims that depend on current or external facts. Prefer first-party and primary sources; use independent sources to test contested or comparative claims. Search for the strongest disconfirming evidence, not only confirming language.
+Use an available web search or research capability for claims that depend on current or external facts. Prefer search or research MCPs such as Exa, Perplexity, Tavily, or Firecrawl when available, but do not require a specific provider. Select tools by capability: use search to discover sources, research or reasoning tools to synthesize broad evidence, and fetch or crawl tools to inspect the full primary source.
 
-Cite each material external claim with a direct URL and enough title/date context for the user to verify it. Distinguish publication date from the date an event or measurement occurred. If Exa is unavailable but an equivalent primary-source research capability exists, disclose the substitution.
+Prefer first-party and primary sources; use independent sources to test contested or comparative claims. Search for the strongest disconfirming evidence, not only confirming language. Cite each material external claim with a direct URL and enough title/date context for the user to verify it. Distinguish publication date from the date an event or measurement occurred.
 
 ## Convene the council
 
@@ -69,7 +69,7 @@ Keep the output proportional. Omit unused passes and say why they were unnecessa
 ## Fail closed
 
 - If the target is not recoverable from the prompt or conversation, ask one precise question and stop.
-- If a required source, artifact, Exa, or council capability is unavailable, name what is unavailable and how that limits the result. Use an equivalent only when it can supply the same class of evidence.
+- If a required source, artifact, external research capability, or council capability is unavailable, name what is unavailable and how that limits the result. Use an alternative tool only when it can supply the same class of evidence.
 - A role-played or single-agent simulated council is not a council pass. Never label invented personas or your own second opinion as council output.
 - If a required pass cannot be completed, label the overall result `Incomplete — <missing pass>` or return **Insufficient evidence**. Do not silently skip it.
 - If evidence conflicts, surface the conflict and lower confidence. Do not average incompatible facts into false certainty.
