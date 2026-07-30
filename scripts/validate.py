@@ -7,7 +7,6 @@ import re
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -24,7 +23,8 @@ def read(relative_path: str) -> str:
 
 def parse_frontmatter(markdown: str) -> dict[str, str]:
     match = re.match(r"\A---\n(.*?)\n---\n", markdown, flags=re.DOTALL)
-    require(match is not None, "SKILL.md must start with YAML frontmatter")
+    if match is None:
+        raise AssertionError("SKILL.md must start with YAML frontmatter")
 
     fields: dict[str, str] = {}
     for line in match.group(1).splitlines():
@@ -66,14 +66,15 @@ def validate_metadata() -> None:
 
 
 def validate_discovery() -> None:
-    skill_files = [
+    skill_files = sorted(
         path.relative_to(ROOT).as_posix()
         for path in ROOT.rglob("SKILL.md")
         if ".git" not in path.parts
-    ]
+    )
     require(
         skill_files
         == [
+            ".agents/skills/validate-repository/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/justify/SKILL.md",
         ],
