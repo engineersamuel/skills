@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the justify skill's packaging and behavioral contract."""
+"""Validate portable skill packaging and behavioral contracts."""
 
 from __future__ import annotations
 
@@ -35,33 +35,47 @@ def parse_frontmatter(markdown: str) -> dict[str, str]:
 
 
 def validate_metadata() -> None:
-    skill = read("skills/justify/SKILL.md")
-    fields = parse_frontmatter(skill)
-    require(
-        set(fields) == {"name", "description"},
-        "frontmatter must contain only name and description",
-    )
-    require(fields["name"] == "justify", "skill name must be justify")
-    require(
-        fields["description"].startswith("Use when "),
-        "description must start with 'Use when '",
-    )
-    require(
-        len(fields["description"]) <= 500, "description must be at most 500 characters"
-    )
+    skills = {
+        "justify": "Justify",
+        "runwisp-job-authoring": "RunWisp Job Authoring",
+    }
+    for name, display_name in skills.items():
+        skill = read(f"skills/{name}/SKILL.md")
+        fields = parse_frontmatter(skill)
+        require(
+            set(fields) == {"name", "description"},
+            f"{name} frontmatter must contain only name and description",
+        )
+        require(fields["name"] == name, f"skill name must be {name}")
+        require(
+            fields["description"].startswith("Use when "),
+            f"{name} description must start with 'Use when '",
+        )
+        require(
+            len(fields["description"]) <= 500,
+            f"{name} description must be at most 500 characters",
+        )
 
-    metadata = read("skills/justify/agents/openai.yaml")
-    require('display_name: "Justify"' in metadata, "Codex display_name is missing")
-    require(
-        re.search(r'^  short_description: ".{25,64}"$', metadata, flags=re.MULTILINE)
-        is not None,
-        "Codex short_description must be 25-64 quoted characters",
-    )
-    require("$justify" in metadata, "Codex default_prompt must mention $justify")
-    require(
-        "dependencies:" not in metadata,
-        "Codex metadata must not require a provider-specific research dependency",
-    )
+        metadata = read(f"skills/{name}/agents/openai.yaml")
+        require(
+            f'display_name: "{display_name}"' in metadata,
+            f"{name} Codex display_name is missing",
+        )
+        require(
+            re.search(
+                r'^  short_description: ".{25,64}"$', metadata, flags=re.MULTILINE
+            )
+            is not None,
+            f"{name} Codex short_description must be 25-64 quoted characters",
+        )
+        require(
+            f"${name}" in metadata,
+            f"{name} Codex default_prompt must mention ${name}",
+        )
+        require(
+            "dependencies:" not in metadata,
+            f"{name} Codex metadata must not require provider-specific dependencies",
+        )
     print("ok: metadata")
 
 
@@ -77,6 +91,7 @@ def validate_discovery() -> None:
             ".agents/skills/validate-repository/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/justify/SKILL.md",
+            "skills/runwisp-job-authoring/SKILL.md",
         ],
         f"unexpected skill discovery set: {skill_files}",
     )
@@ -115,6 +130,52 @@ def validate_behavior_contract() -> None:
         print(f"ok: {scenario} behavior contract")
 
 
+def validate_runwisp_job_authoring_contract() -> None:
+    skill = read("skills/runwisp-job-authoring/SKILL.md").lower()
+    scenarios = {
+        "source of truth": (
+            "target repository",
+            "current jobkit",
+        ),
+        "manifest and execution": (
+            "schema",
+            "required_env",
+            "required_files",
+            "shell-free",
+            "forwarded arguments",
+            "exit codes",
+        ),
+        "paths and secrets": (
+            "inside the job directory",
+            "environment variable names",
+            "secret values",
+        ),
+        "verification": (
+            "runwisp-job doctor job_dir",
+            "passive",
+            "does not prove runtime",
+            "dry run",
+            "authorization",
+        ),
+        "ownership boundary": (
+            "install dependencies",
+            "discover jobs",
+            "store secrets",
+            "configure schedules",
+            "sandbox",
+            "actual scheduler",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(not missing, f"{scenario} contract missing: {', '.join(missing)}")
+        print(f"ok: runwisp {scenario} contract")
+    require(
+        re.search(r"closest[^.\n]*jobkit example", skill) is not None,
+        "source of truth contract must select the closest current Jobkit example",
+    )
+
+
 def validate_repository_support() -> None:
     ignore = read(".gitignore").splitlines()
     require("repomix-output.xml" in ignore, "repomix-output.xml must be ignored")
@@ -125,6 +186,10 @@ def validate_repository_support() -> None:
         "README must document both harnesses",
     )
     require("npx skills add" in readme, "README must document skills CLI installation")
+    require(
+        "runwisp-job-authoring" in readme,
+        "README must document the runwisp-job-authoring skill",
+    )
 
     workflow = read(".github/workflows/release.yml")
     require(
@@ -138,6 +203,11 @@ def validate_repository_support() -> None:
         "release workflow must package skills/justify as justify",
     )
     require(
+        "cp -R skills/runwisp-job-authoring/. dist/staging/runwisp-job-authoring/"
+        in workflow,
+        "release workflow must package runwisp-job-authoring independently",
+    )
+    require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
     )
@@ -149,6 +219,7 @@ def main() -> int:
         validate_metadata,
         validate_discovery,
         validate_behavior_contract,
+        validate_runwisp_job_authoring_contract,
         validate_repository_support,
     )
     try:

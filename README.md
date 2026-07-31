@@ -1,8 +1,9 @@
-# justify
+# Agent Skills
 
-`justify` is a cross-harness Agent Skill for auditing claims, recommendations, plans, and decisions. It checks local evidence, researches external claims with an available search or research tool when needed, and uses a council for consequential or contested judgment calls.
+Portable skills for evidence audits and RunWisp job-package authoring.
 
-**Use `justify` as an evidence-based go/no-go check on your current worktree: are these changes applicable, valuable, and worth moving forward with?**
+- `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
+- `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
 
 ## Quickstart (30-second setup)
 
@@ -12,11 +13,16 @@ Run the skills.sh installer:
 npx skills@latest add engineersamuel/skills
 ```
 
-Select `justify` and the coding agents where you want it installed.
+Select either skill and the coding agents where you want it installed.
 
-Run `/justify`, `$justify`, or `$skills:justify` depending on your coding harness. Give it a claim, recommendation, plan, or decision to audit, for example: `Use $justify to audit the recommendation above.`
+Invoke the installed skill using your harness syntax:
 
-It will:
+```text
+Use $justify to audit the recommendation above.
+Use $runwisp-job-authoring to create and validate this RunWisp job package.
+```
+
+`justify` will:
 
 - Audit the target against primary evidence.
 - Research current external claims with an available search or research tool when needed.
@@ -31,12 +37,14 @@ Claude Code:
 
 ```bash
 npx skills add engineersamuel/skills --skill justify --agent claude-code
+npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 ```
 
 Codex:
 
 ```bash
 npx skills add engineersamuel/skills --skill justify --agent codex
+npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 ```
 
 These unversioned installs track `main` and are the recommended path.
@@ -65,11 +73,15 @@ npx skills add 'engineersamuel/skills#v1.0.0' --skill justify --agent codex
 
 Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `skills update` preserves the existing tag.
 
+Pin `runwisp-job-authoring` only to a future release tag that contains it. This repository change does not create or move a tag.
+
 ## Requirements
 
 Local repository audits need no extra integration. External claims require an available web search or research capability, such as Exa, Perplexity, Tavily, Firecrawl, or another equivalent tool. No specific provider is required. Consequential or contested judgments require an installed `council` skill or equivalent deliberation workflow with independent live members.
 
 `justify` fails closed when a required capability is absent. It reports the missing pass instead of fabricating research or simulated council output.
+
+`runwisp-job-authoring` needs access to the target repository and current Jobkit documentation. Running `doctor` or a safe dry run also requires an installed `runwisp-job` command and the package's declared runtime inputs.
 
 ## Validate
 
@@ -79,11 +91,11 @@ npx skills add . --list
 go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
 ```
 
-Validation checks Agent Skills metadata, Codex UI metadata, discovery, the audit/external-research/council/failure contract lint, and release support. Forward tests with fresh agents verify behavioral compliance.
+Validation checks Agent Skills metadata, Codex UI metadata, discovery, behavior contracts, and release support. Forward tests with fresh agents verify behavioral compliance.
 
 ## Release
 
-Push a semantic version tag such as `v1.0.0`. GitHub Actions validates the repository, packages the skill as `.tar.gz` and `.zip`, generates checksums, and creates the GitHub release. Do not move an existing release tag.
+Push a semantic version tag such as `v1.0.0`. GitHub Actions validates the repository, packages each published skill as `.tar.gz` and `.zip`, generates checksums, and creates the GitHub release. Do not move an existing release tag.
 
 ## License
 

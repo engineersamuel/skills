@@ -53,17 +53,32 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - name: Package skill
+      - name: Package skills
         shell: bash
         run: |
-          archive="justify-${GITHUB_REF_NAME}"
           mkdir -p dist/staging/justify
           cp -R skills/justify/. dist/staging/justify/
           cp README.md LICENSE dist/staging/justify/
-          tar -C dist/staging -czf "dist/${archive}.tar.gz" justify
-          (cd dist/staging && zip -qr "../${archive}.zip" justify)
+          tar -C dist/staging -czf "dist/justify-${GITHUB_REF_NAME}.tar.gz" justify
+          (cd dist/staging && zip -qr "../justify-${GITHUB_REF_NAME}.zip" justify)
+
+          mkdir -p dist/staging/runwisp-job-authoring
+          cp -R skills/runwisp-job-authoring/. dist/staging/runwisp-job-authoring/
+          cp README.md LICENSE dist/staging/runwisp-job-authoring/
+          tar -C dist/staging -czf \
+            "dist/runwisp-job-authoring-${GITHUB_REF_NAME}.tar.gz" \
+            runwisp-job-authoring
+          (cd dist/staging && zip -qr \
+            "../runwisp-job-authoring-${GITHUB_REF_NAME}.zip" \
+            runwisp-job-authoring)
+
           rm -rf dist/staging
-          (cd dist && sha256sum "${archive}.tar.gz" "${archive}.zip" > SHA256SUMS)
+          (cd dist && sha256sum \
+            justify-"${GITHUB_REF_NAME}".tar.gz \
+            justify-"${GITHUB_REF_NAME}".zip \
+            runwisp-job-authoring-"${GITHUB_REF_NAME}".tar.gz \
+            runwisp-job-authoring-"${GITHUB_REF_NAME}".zip \
+            > SHA256SUMS)
 
       - name: Create GitHub release
         env:
@@ -72,7 +87,9 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             dist/justify-"${GITHUB_REF_NAME}".tar.gz \
             dist/justify-"${GITHUB_REF_NAME}".zip \
+            dist/runwisp-job-authoring-"${GITHUB_REF_NAME}".tar.gz \
+            dist/runwisp-job-authoring-"${GITHUB_REF_NAME}".zip \
             dist/SHA256SUMS \
             --generate-notes \
-            --title "justify ${GITHUB_REF_NAME}" \
+            --title "Agent Skills ${GITHUB_REF_NAME}" \
             --verify-tag
