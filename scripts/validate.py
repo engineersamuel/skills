@@ -141,14 +141,23 @@ def validate_runwisp_job_authoring_contract() -> None:
             "schema",
             "required_env",
             "required_files",
+            "unknown fields",
             "shell-free",
             "forwarded arguments",
             "exit codes",
         ),
         "paths and secrets": (
             "inside the job directory",
+            "must be relative",
             "environment variable names",
+            "nonblank",
             "secret values",
+        ),
+        "process ownership": (
+            "replaces",
+            "stdout",
+            "stderr",
+            "signals",
         ),
         "verification": (
             "runwisp-job doctor job_dir",
