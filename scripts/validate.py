@@ -134,8 +134,18 @@ def validate_runwisp_job_authoring_contract() -> None:
     skill = read("skills/runwisp-job-authoring/SKILL.md").lower()
     scenarios = {
         "source of truth": (
-            "target repository",
+            "repository containing the job package",
             "current jobkit",
+            "local jobkit checkout",
+            "github.com/engineersamuel/runwisp-jobkit",
+            "installed skill",
+            "repository-instruction discovery",
+            "multiple `job.toml`",
+            "ask which one",
+            "from that path",
+            "runtime jobkit version",
+            "default branch",
+            "state that assumption",
         ),
         "manifest and execution": (
             "schema",
@@ -161,6 +171,7 @@ def validate_runwisp_job_authoring_contract() -> None:
         ),
         "verification": (
             "runwisp-job doctor job_dir",
+            "target package",
             "passive",
             "does not prove runtime",
             "dry run",
@@ -173,6 +184,7 @@ def validate_runwisp_job_authoring_contract() -> None:
             "configure schedules",
             "sandbox",
             "actual scheduler",
+            "cannot locate",
         ),
     }
     for scenario, required_phrases in scenarios.items():
