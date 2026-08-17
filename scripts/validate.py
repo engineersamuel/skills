@@ -36,16 +36,30 @@ def parse_frontmatter(markdown: str) -> dict[str, str]:
 
 def validate_metadata() -> None:
     skills = {
+        "goal-me": "Goal Me",
         "justify": "Justify",
         "runwisp-job-authoring": "RunWisp Job Authoring",
     }
     for name, display_name in skills.items():
         skill = read(f"skills/{name}/SKILL.md")
         fields = parse_frontmatter(skill)
+        allowed = {"name", "description"}
+        if "disable-model-invocation" in fields:
+            require(
+                fields["disable-model-invocation"] == "true",
+                f"{name} disable-model-invocation must be true",
+            )
+            allowed = allowed | {"disable-model-invocation"}
         require(
-            set(fields) == {"name", "description"},
-            f"{name} frontmatter must contain only name and description",
+            set(fields) == allowed,
+            f"{name} frontmatter keys must be name, description, "
+            "and optional disable-model-invocation",
         )
+        if name == "goal-me":
+            require(
+                fields.get("disable-model-invocation") == "true",
+                "goal-me must disable model invocation",
+            )
         require(fields["name"] == name, f"skill name must be {name}")
         require(
             fields["description"].startswith("Use when "),
@@ -89,6 +103,7 @@ def validate_discovery() -> None:
         skill_files
         == [
             ".agents/skills/validate-repository/SKILL.md",
+            "skills/goal-me/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/justify/SKILL.md",
             "skills/runwisp-job-authoring/SKILL.md",
@@ -197,6 +212,44 @@ def validate_runwisp_job_authoring_contract() -> None:
     )
 
 
+def validate_goal_me_contract() -> None:
+    skill = read("skills/goal-me/SKILL.md").lower()
+    scenarios = {
+        "grill": (
+            "batch-grill-me",
+            "task",
+            "success criteria",
+            "shared understanding",
+        ),
+        "readiness": (
+            "one exact artifact",
+            "1-10",
+            "at least three",
+        ),
+        "write": (
+            "current working directory",
+            "goal.md",
+            "four lowercase hex",
+        ),
+        "handoff": (
+            "written path",
+            "the file is the handoff",
+            "do not execute the loop",
+        ),
+        "persistence": (
+            "scoreboard",
+            "learnings",
+            "this file is the only memory",
+            "re-score from the artifact",
+            "do not create a second progress file",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(not missing, f"{scenario} contract missing: {', '.join(missing)}")
+        print(f"ok: goal-me {scenario} contract")
+
+
 def validate_repository_support() -> None:
     ignore = read(".gitignore").splitlines()
     require("repomix-output.xml" in ignore, "repomix-output.xml must be ignored")
@@ -211,6 +264,7 @@ def validate_repository_support() -> None:
         "runwisp-job-authoring" in readme,
         "README must document the runwisp-job-authoring skill",
     )
+    require("goal-me" in readme, "README must document the goal-me skill")
 
     workflow = read(".github/workflows/release.yml")
     require(
@@ -229,6 +283,10 @@ def validate_repository_support() -> None:
         "release workflow must package runwisp-job-authoring independently",
     )
     require(
+        "cp -R skills/goal-me/. dist/staging/goal-me/" in workflow,
+        "release workflow must package skills/goal-me as goal-me",
+    )
+    require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
     )
@@ -241,6 +299,7 @@ def main() -> int:
         validate_discovery,
         validate_behavior_contract,
         validate_runwisp_job_authoring_contract,
+        validate_goal_me_contract,
         validate_repository_support,
     )
     try:
