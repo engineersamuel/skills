@@ -1,8 +1,9 @@
 # Agent Skills
 
-Portable skills for evidence audits and RunWisp job-package authoring.
+Portable skills for evidence audits, goal-loop prompts, and RunWisp job-package authoring.
 
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
+- `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
 
 ## Quickstart (30-second setup)
@@ -19,8 +20,14 @@ Invoke the installed skill using your harness syntax:
 
 ```text
 Use $justify to audit the recommendation above.
+Use $goal-me to turn this request into a GOAL.md.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 ```
+
+`goal-me` will:
+
+- Interview until `TASK` and `SUCCESS CRITERIA` are strict enough to score.
+- Write the filled goal-loop prompt to `GOAL.md`, or `GOAL-<id>.md` if `GOAL.md` already exists.
 
 `justify` will:
 
@@ -37,6 +44,7 @@ Claude Code:
 
 ```bash
 npx skills add engineersamuel/skills --skill justify --agent claude-code
+npx skills add engineersamuel/skills --skill goal-me --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 ```
 
@@ -44,6 +52,7 @@ Codex:
 
 ```bash
 npx skills add engineersamuel/skills --skill justify --agent codex
+npx skills add engineersamuel/skills --skill goal-me --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 ```
 
@@ -73,7 +82,7 @@ npx skills add 'engineersamuel/skills#v1.0.0' --skill justify --agent codex
 
 Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `skills update` preserves the existing tag.
 
-Pin `runwisp-job-authoring` only to a future release tag that contains it. This repository change does not create or move a tag.
+Pin `runwisp-job-authoring` or `goal-me` only to a future release tag that contains it. This repository change does not create or move a tag.
 
 ## Requirements
 
@@ -82,6 +91,8 @@ Local repository audits need no extra integration. External claims require an av
 `justify` fails closed when a required capability is absent. It reports the missing pass instead of fabricating research or simulated council output.
 
 `runwisp-job-authoring` needs access to the target repository and current Jobkit documentation. Running `doctor` or a safe dry run also requires an installed `runwisp-job` command and the package's declared runtime inputs.
+
+`goal-me` needs write access to the current working directory. It uses an installed `batch-grill-me` skill when one is present.
 
 ## Validate
 
