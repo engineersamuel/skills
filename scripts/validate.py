@@ -216,7 +216,7 @@ def validate_goal_me_contract() -> None:
     skill = read("skills/goal-me/SKILL.md").lower()
     scenarios = {
         "grill": (
-            "batch-grill-me",
+            "grill-me",
             "task",
             "success criteria",
             "shared understanding",

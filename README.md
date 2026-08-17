@@ -92,7 +92,7 @@ Local repository audits need no extra integration. External claims require an av
 
 `runwisp-job-authoring` needs access to the target repository and current Jobkit documentation. Running `doctor` or a safe dry run also requires an installed `runwisp-job` command and the package's declared runtime inputs.
 
-`goal-me` needs write access to the current working directory. It uses an installed `batch-grill-me` skill when one is present.
+`goal-me` needs write access to the current working directory. It uses an installed `grill-me` skill when one is present.
 
 ## Validate
 
