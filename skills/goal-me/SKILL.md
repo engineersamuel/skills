@@ -12,9 +12,9 @@ Turn free-form input into a **goal prompt** a later harness can run. The only ar
 
 1. **Seed.** Use the user's input as the starting idea. If they gave none, ask for the idea in one sentence and wait.
 
-2. **Grill.** Run `/batch-grill-me` until the user confirms a **shared understanding** of the work to produce. Aim every round at `TASK` and `SUCCESS CRITERIA` only. The loop protocol and rules are fixed.
+2. **Grill.** Run `/grill-me` until the user confirms a **shared understanding** of the work to produce. Aim every round at `TASK` and `SUCCESS CRITERIA` only. The loop protocol and rules are fixed.
 
-   If `batch-grill-me` is not installed, interview in frontier rounds: number every currently unblocked decision, attach a recommended answer, wait for the user's answers, then recompute the frontier. Look up facts yourself.
+   If `grill-me` is not installed, interview in frontier rounds: number every currently unblocked decision, attach a recommended answer, wait for the user's answers, then recompute the frontier. Look up facts yourself.
 
    Keep a live draft of `TASK` and the criteria as answers arrive.
 
