@@ -261,7 +261,7 @@ def validate_finish_contract() -> None:
         "resolve every conflict",
         "git push --force-with-lease",
         "gh pr create",
-        "gh pr merge --auto --rebase",
+        "gh pr merge --auto --squash",
         "until github reports `merged`",
         "requires user action",
     )
