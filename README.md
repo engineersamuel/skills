@@ -2,7 +2,7 @@
 
 Portable skills for repository delivery, evidence audits, goal-loop prompts, and RunWisp job-package authoring.
 
-- `finish` commits current work, rebases on `origin/main`, creates a PR, enables squash auto-merge, and monitors it until merged.
+- `finish` commits all current worktree changes after stopping for user review of questionable or ignore-worthy files, rebases on `origin/main`, creates a PR, enables squash auto-merge, and monitors it until merged.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).

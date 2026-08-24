@@ -257,6 +257,13 @@ def validate_finish_contract() -> None:
     required_phrases = (
         "explicitly invokes",
         "disable-model-invocation: true",
+        "git status --short --untracked-files=all",
+        "commit all current worktree changes",
+        "might belong in `.gitignore`",
+        "stop and ask the user",
+        "never commit it",
+        "git add -a",
+        "no unstaged or untracked changes remain",
         "git pull --rebase origin main",
         "resolve every conflict",
         "git push --force-with-lease",
