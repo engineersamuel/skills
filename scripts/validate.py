@@ -36,6 +36,7 @@ def parse_frontmatter(markdown: str) -> dict[str, str]:
 
 def validate_metadata() -> None:
     skills = {
+        "finish": "Finish",
         "goal-me": "Goal Me",
         "justify": "Justify",
         "runwisp-job-authoring": "RunWisp Job Authoring",
@@ -55,10 +56,10 @@ def validate_metadata() -> None:
             f"{name} frontmatter keys must be name, description, "
             "and optional disable-model-invocation",
         )
-        if name == "goal-me":
+        if name in {"finish", "goal-me"}:
             require(
                 fields.get("disable-model-invocation") == "true",
-                "goal-me must disable model invocation",
+                f"{name} must disable model invocation",
             )
         require(fields["name"] == name, f"skill name must be {name}")
         require(
@@ -103,6 +104,7 @@ def validate_discovery() -> None:
         skill_files
         == [
             ".agents/skills/validate-repository/SKILL.md",
+            "skills/finish/SKILL.md",
             "skills/goal-me/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/justify/SKILL.md",
@@ -250,6 +252,24 @@ def validate_goal_me_contract() -> None:
         print(f"ok: goal-me {scenario} contract")
 
 
+def validate_finish_contract() -> None:
+    skill = read("skills/finish/SKILL.md").lower()
+    required_phrases = (
+        "explicitly invokes",
+        "disable-model-invocation: true",
+        "git pull --rebase origin main",
+        "resolve every conflict",
+        "git push --force-with-lease",
+        "gh pr create",
+        "gh pr merge --auto --rebase",
+        "until github reports `merged`",
+        "requires user action",
+    )
+    missing = [phrase for phrase in required_phrases if phrase not in skill]
+    require(not missing, f"finish contract missing: {', '.join(missing)}")
+    print("ok: finish behavior contract")
+
+
 def validate_repository_support() -> None:
     ignore = read(".gitignore").splitlines()
     require("repomix-output.xml" in ignore, "repomix-output.xml must be ignored")
@@ -265,6 +285,7 @@ def validate_repository_support() -> None:
         "README must document the runwisp-job-authoring skill",
     )
     require("goal-me" in readme, "README must document the goal-me skill")
+    require("`finish`" in readme, "README must document the finish skill")
 
     workflow = read(".github/workflows/release.yml")
     require(
@@ -287,6 +308,10 @@ def validate_repository_support() -> None:
         "release workflow must package skills/goal-me as goal-me",
     )
     require(
+        "cp -R skills/finish/. dist/staging/finish/" in workflow,
+        "release workflow must package skills/finish as finish",
+    )
+    require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
     )
@@ -300,6 +325,7 @@ def main() -> int:
         validate_behavior_contract,
         validate_runwisp_job_authoring_contract,
         validate_goal_me_contract,
+        validate_finish_contract,
         validate_repository_support,
     )
     try:

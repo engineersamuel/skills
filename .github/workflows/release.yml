@@ -78,6 +78,12 @@ jobs:
           tar -C dist/staging -czf "dist/goal-me-${GITHUB_REF_NAME}.tar.gz" goal-me
           (cd dist/staging && zip -qr "../goal-me-${GITHUB_REF_NAME}.zip" goal-me)
 
+          mkdir -p dist/staging/finish
+          cp -R skills/finish/. dist/staging/finish/
+          cp README.md LICENSE dist/staging/finish/
+          tar -C dist/staging -czf "dist/finish-${GITHUB_REF_NAME}.tar.gz" finish
+          (cd dist/staging && zip -qr "../finish-${GITHUB_REF_NAME}.zip" finish)
+
           rm -rf dist/staging
           (cd dist && sha256sum \
             justify-"${GITHUB_REF_NAME}".tar.gz \
@@ -86,6 +92,8 @@ jobs:
             runwisp-job-authoring-"${GITHUB_REF_NAME}".zip \
             goal-me-"${GITHUB_REF_NAME}".tar.gz \
             goal-me-"${GITHUB_REF_NAME}".zip \
+            finish-"${GITHUB_REF_NAME}".tar.gz \
+            finish-"${GITHUB_REF_NAME}".zip \
             > SHA256SUMS)
 
       - name: Create GitHub release
@@ -99,6 +107,8 @@ jobs:
             dist/runwisp-job-authoring-"${GITHUB_REF_NAME}".zip \
             dist/goal-me-"${GITHUB_REF_NAME}".tar.gz \
             dist/goal-me-"${GITHUB_REF_NAME}".zip \
+            dist/finish-"${GITHUB_REF_NAME}".tar.gz \
+            dist/finish-"${GITHUB_REF_NAME}".zip \
             dist/SHA256SUMS \
             --generate-notes \
             --title "Agent Skills ${GITHUB_REF_NAME}" \

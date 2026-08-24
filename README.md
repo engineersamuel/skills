@@ -1,7 +1,8 @@
 # Agent Skills
 
-Portable skills for evidence audits, goal-loop prompts, and RunWisp job-package authoring.
+Portable skills for repository delivery, evidence audits, goal-loop prompts, and RunWisp job-package authoring.
 
+- `finish` commits current work, rebases on `origin/main`, creates a PR, enables auto-merge, and monitors it until merged.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
@@ -22,6 +23,7 @@ Invoke the installed skill using your harness syntax:
 Use $justify to audit the recommendation above.
 Use $goal-me to turn this request into a GOAL.md.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
+Use $finish to commit this work and monitor its PR until merged.
 ```
 
 `goal-me` will:
@@ -46,6 +48,7 @@ Claude Code:
 npx skills add engineersamuel/skills --skill justify --agent claude-code
 npx skills add engineersamuel/skills --skill goal-me --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
+npx skills add engineersamuel/skills --skill finish --agent claude-code
 ```
 
 Codex:
@@ -54,6 +57,7 @@ Codex:
 npx skills add engineersamuel/skills --skill justify --agent codex
 npx skills add engineersamuel/skills --skill goal-me --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
+npx skills add engineersamuel/skills --skill finish --agent codex
 ```
 
 These unversioned installs track `main` and are the recommended path.
