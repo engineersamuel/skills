@@ -2,6 +2,7 @@
 
 Portable skills for repository delivery, evidence audits, goal-loop prompts, and RunWisp job-package authoring.
 
+- `audit-ro` coordinates a complete, read-only codebase audit for materially useful simplifications.
 - `finish` commits all current worktree changes after stopping for user review of questionable or ignore-worthy files, rebases on `origin/main`, creates a PR, enables squash auto-merge, and monitors it until merged.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
@@ -20,6 +21,7 @@ Select either skill and the coding agents where you want it installed.
 Invoke the installed skill using your harness syntax:
 
 ```text
+Use $audit-ro to audit this codebase for material simplifications without changing it.
 Use $justify to audit the recommendation above.
 Use $goal-me to turn this request into a GOAL.md.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
@@ -45,6 +47,7 @@ You’re ready to pressure-test your next claim or decision.
 Claude Code:
 
 ```bash
+npx skills add engineersamuel/skills --skill audit-ro --agent claude-code
 npx skills add engineersamuel/skills --skill justify --agent claude-code
 npx skills add engineersamuel/skills --skill goal-me --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
@@ -54,6 +57,7 @@ npx skills add engineersamuel/skills --skill finish --agent claude-code
 Codex:
 
 ```bash
+npx skills add engineersamuel/skills --skill audit-ro --agent codex
 npx skills add engineersamuel/skills --skill justify --agent codex
 npx skills add engineersamuel/skills --skill goal-me --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
@@ -91,6 +95,8 @@ Pin `runwisp-job-authoring` or `goal-me` only to a future release tag that conta
 ## Requirements
 
 Local repository audits need no extra integration. External claims require an available web search or research capability, such as Exa, Perplexity, Tavily, Firecrawl, or another equivalent tool. No specific provider is required. Consequential or contested judgments require an installed `council` skill or equivalent deliberation workflow with independent live members.
+
+`audit-ro` is user-invoked only. It uses read-only workers when available, keeps its audit record outside the target repository, and does not run tests or modify the worktree.
 
 `justify` fails closed when a required capability is absent. It reports the missing pass instead of fabricating research or simulated council output.
 
