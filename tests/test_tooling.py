@@ -23,7 +23,7 @@ def test_ty_replaces_mypy_for_repository_type_checking() -> None:
     assert "[tool.ty.environment]" in pyproject
     assert 'python-version = "3.10"' in pyproject
     assert "[tool.ty.src]" in pyproject
-    assert 'include = ["scripts", "tests"]' in pyproject
+    assert 'include = ["scripts", "tests", "tools"]' in pyproject
 
     for relative_path in (".pre-commit-config.yaml", ".github/workflows/ci.yml"):
         automation = read(relative_path).lower()
