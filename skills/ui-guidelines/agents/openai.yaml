@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Guidelines"
+  short_description: "Apply practical UI and HTML quality guidelines"
+  default_prompt: "Use $ui-guidelines to improve this UI or HTML with accessible visual, motion, typography, color, layout, and writing practices."

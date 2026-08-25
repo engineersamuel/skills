@@ -100,6 +100,16 @@ jobs:
             "../clean-tests-${GITHUB_REF_NAME}.zip" \
             clean-tests)
 
+          mkdir -p dist/staging/ui-guidelines
+          cp -R skills/ui-guidelines/. dist/staging/ui-guidelines/
+          cp LICENSE dist/staging/ui-guidelines/
+          tar -C dist/staging -czf \
+            "dist/ui-guidelines-${GITHUB_REF_NAME}.tar.gz" \
+            ui-guidelines
+          (cd dist/staging && zip -qr \
+            "../ui-guidelines-${GITHUB_REF_NAME}.zip" \
+            ui-guidelines)
+
           rm -rf dist/staging
           (cd dist && sha256sum \
             justify-"${GITHUB_REF_NAME}".tar.gz \
@@ -114,6 +124,8 @@ jobs:
             audit-ro-"${GITHUB_REF_NAME}".zip \
             clean-tests-"${GITHUB_REF_NAME}".tar.gz \
             clean-tests-"${GITHUB_REF_NAME}".zip \
+            ui-guidelines-"${GITHUB_REF_NAME}".tar.gz \
+            ui-guidelines-"${GITHUB_REF_NAME}".zip \
             > SHA256SUMS)
 
       - name: Create GitHub release
@@ -133,6 +145,8 @@ jobs:
             dist/audit-ro-"${GITHUB_REF_NAME}".zip \
             dist/clean-tests-"${GITHUB_REF_NAME}".tar.gz \
             dist/clean-tests-"${GITHUB_REF_NAME}".zip \
+            dist/ui-guidelines-"${GITHUB_REF_NAME}".tar.gz \
+            dist/ui-guidelines-"${GITHUB_REF_NAME}".zip \
             dist/SHA256SUMS \
             --generate-notes \
             --title "Agent Skills ${GITHUB_REF_NAME}" \
