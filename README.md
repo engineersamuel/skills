@@ -1,7 +1,7 @@
 # Agent Skills
 
 Portable skills for repository delivery, evidence audits, test-suite cleanup,
-goal-loop prompts, and RunWisp job-package authoring.
+interface quality, goal-loop prompts, and RunWisp job-package authoring.
 
 - `audit-ro` coordinates a complete, read-only codebase audit for materially useful simplifications.
 - `clean-tests` removes low-value tests while retaining stable, repository-owned behavioral contracts.
@@ -9,6 +9,7 @@ goal-loop prompts, and RunWisp job-package authoring.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
+- `ui-guidelines` applies practical visual, motion, typography, color, accessibility, layout, and writing rules to UI, frontend, HTML, and CSS work.
 
 This repository also ships repository tooling, not a skill: a user-level complexity gate that runs
 [`cccc`](https://github.com/moznion/cccc) after each agent edit and makes the model simplify a
@@ -40,6 +41,7 @@ Use $justify to audit the recommendation above.
 Use $goal-me to turn this request into a GOAL.md.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 Use $finish to commit this work and monitor its PR until merged.
+Use $ui-guidelines to improve this UI or HTML.
 ```
 
 `clean-tests` will:
@@ -63,6 +65,15 @@ Use $finish to commit this work and monitor its PR until merged.
 - Convene a real council for consequential or contested judgments.
 - Report a verdict, calibrated confidence, claim ledger, citations, and dissent.
 
+`ui-guidelines` will:
+
+- Be eligible for automatic invocation when work involves a user interface,
+  frontend component, web page, HTML, or CSS.
+- Apply focused rules for interface geometry, motion, typography, color,
+  accessibility, layout, and UI writing.
+- Preserve stronger repository, product, correctness, and accessibility
+  requirements when a general guideline does not fit.
+
 You’re ready to use the installed skills.
 
 ## Direct install
@@ -76,6 +87,7 @@ npx skills add engineersamuel/skills --skill justify --agent claude-code
 npx skills add engineersamuel/skills --skill goal-me --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 npx skills add engineersamuel/skills --skill finish --agent claude-code
+npx skills add engineersamuel/skills --skill ui-guidelines --agent claude-code
 ```
 
 Codex:
@@ -87,6 +99,7 @@ npx skills add engineersamuel/skills --skill justify --agent codex
 npx skills add engineersamuel/skills --skill goal-me --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 npx skills add engineersamuel/skills --skill finish --agent codex
+npx skills add engineersamuel/skills --skill ui-guidelines --agent codex
 ```
 
 These unversioned installs track `main` and are the recommended path.
@@ -115,9 +128,9 @@ npx skills add 'engineersamuel/skills#v1.0.0' --skill justify --agent codex
 
 Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `skills update` preserves the existing tag.
 
-Pin `clean-tests`, `runwisp-job-authoring`, or `goal-me` only to a future
-release tag that contains it. This repository change does not create or move a
-tag.
+Pin `clean-tests`, `runwisp-job-authoring`, `goal-me`, or `ui-guidelines` only
+to a future release tag that contains it. This repository change does not
+create or move a tag.
 
 ## Requirements
 

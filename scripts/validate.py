@@ -42,6 +42,7 @@ def validate_metadata() -> None:
         "goal-me": "Goal Me",
         "justify": "Justify",
         "runwisp-job-authoring": "RunWisp Job Authoring",
+        "ui-guidelines": "UI Guidelines",
     }
     for name, display_name in skills.items():
         skill = read(f"skills/{name}/SKILL.md")
@@ -113,6 +114,7 @@ def validate_discovery() -> None:
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/justify/SKILL.md",
             "skills/runwisp-job-authoring/SKILL.md",
+            "skills/ui-guidelines/SKILL.md",
         ],
         f"unexpected skill discovery set: {skill_files}",
     )
@@ -423,6 +425,144 @@ def validate_clean_tests_contract() -> None:
     print("ok: clean-tests source credit")
 
 
+def validate_ui_guidelines_contract() -> None:
+    skill = read("skills/ui-guidelines/SKILL.md")
+    fields = parse_frontmatter(skill)
+    description = fields["description"].lower()
+    for trigger in ("user interface", "frontend", "html", "css"):
+        require(
+            trigger in description,
+            f"ui-guidelines description must include {trigger}",
+        )
+    require(
+        "disable-model-invocation" not in fields,
+        "ui-guidelines must allow automatic model invocation",
+    )
+
+    normalized = skill.lower()
+    scenarios = {
+        "interface": (
+            "concentric border radius",
+            "optical alignment",
+            "outline-offset: -1px",
+            "8% opacity",
+        ),
+        "motion": (
+            "transition: all",
+            "0.95",
+            "0.98",
+            "200ms ease-out",
+            "0.25",
+            "4px",
+            "css transitions",
+            "keyframes",
+            "switching between light and dark themes",
+            "will-change",
+            "safari on ios",
+            "stagger",
+            "high-frequency interactions",
+        ),
+        "typography": (
+            ".woff2",
+            "tabular-nums",
+            "60-75 characters",
+            "text-wrap: balance",
+            "text-wrap: pretty",
+            "overflow-wrap: break-word",
+            "white-space: nowrap",
+            "-webkit-font-smoothing",
+            "-moz-osx-font-smoothing",
+            "text-transform",
+            "smart punctuation",
+            "text-underline-position: from-font",
+            "text-decoration-skip-ink: auto",
+            "truncated text",
+        ),
+        "color": (
+            "every palette step",
+            "semantic tokens",
+            "primitive tokens",
+            "--color-accent-solid",
+            "brand color",
+            "another role",
+            "background on which the element",
+            "not the light palette reversed",
+            "prefers-color-scheme",
+            ".dark",
+            "in oklab",
+            "in oklch",
+        ),
+        "accessibility": (
+            "semantically correct native elements",
+            ":focus-visible",
+            "outline: none",
+            'tabindex="0"',
+            'tabindex="-1"',
+            "icon-only buttons",
+            "aria-label",
+            'aria-hidden="true"',
+            "decorative images",
+            "real `<label>`",
+            "`inputmode`",
+            "never block paste",
+            "disabled control",
+            'aria-disabled="true"',
+            "keep submit controls enabled",
+            'aria-invalid="true"',
+            "aria-describedby",
+            "first invalid field",
+            "24x24px",
+            "44x44px",
+            "40x40px",
+            "pointer-events: none",
+            "@media (hover: hover)",
+            "prefers-reduced-motion: no-preference",
+            'role="status"',
+            'role="alert"',
+            "color alone",
+            "skip-to-content",
+            "scroll-margin-top",
+        ),
+        "layout": (
+            "at least twice",
+            "8px",
+            "16px",
+            "logical properties",
+            "margin-inline-start",
+            "padding-inline-end",
+            "fixed widths or heights",
+        ),
+        "writing": (
+            "start button labels with a verb",
+            "repeat the consequence",
+            "continue",
+            "next",
+            "describe the destination",
+            "click here",
+            "sentence case",
+            "state they turn on",
+            "empty states",
+            'address the reader as "you"',
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in normalized]
+        require(
+            not missing,
+            f"ui-guidelines {scenario} contract missing: {', '.join(missing)}",
+        )
+        print(f"ok: ui-guidelines {scenario} contract")
+
+    credit = read("skills/ui-guidelines/README.md")
+    source_url = "https://interfaces.dev/cheat-sheet"
+    require(source_url in credit, "ui-guidelines README must credit the source")
+    require(
+        "credit" in credit.lower(),
+        "ui-guidelines README must label the source attribution",
+    )
+    print("ok: ui-guidelines source credit")
+
+
 def validate_repository_support() -> None:
     ignore = read(".gitignore").splitlines()
     require("repomix-output.xml" in ignore, "repomix-output.xml must be ignored")
@@ -441,6 +581,10 @@ def validate_repository_support() -> None:
     require("`finish`" in readme, "README must document the finish skill")
     require("`audit-ro`" in readme, "README must document the audit-ro skill")
     require("`clean-tests`" in readme, "README must document the clean-tests skill")
+    require(
+        "`ui-guidelines`" in readme,
+        "README must document the ui-guidelines skill",
+    )
 
     workflow = read(".github/workflows/release.yml")
     require(
@@ -482,11 +626,28 @@ def validate_repository_support() -> None:
         "cp README.md LICENSE dist/staging/clean-tests/" not in workflow,
         "release packaging must preserve the credited clean-tests README",
     )
+    require(
+        "cp -R skills/ui-guidelines/. dist/staging/ui-guidelines/" in workflow,
+        "release workflow must package ui-guidelines independently",
+    )
+    require(
+        "cp LICENSE dist/staging/ui-guidelines/" in workflow,
+        "ui-guidelines release package must include the repository license",
+    )
+    require(
+        "cp README.md LICENSE dist/staging/ui-guidelines/" not in workflow,
+        "release packaging must preserve the credited ui-guidelines README",
+    )
     for archive in ("tar.gz", "zip"):
         asset = f'clean-tests-"${{GITHUB_REF_NAME}}".{archive}'
         require(
             workflow.count(asset) >= 2,
             f"release workflow must checksum and publish the clean-tests {archive}",
+        )
+        asset = f'ui-guidelines-"${{GITHUB_REF_NAME}}".{archive}'
+        require(
+            workflow.count(asset) >= 2,
+            f"release workflow must checksum and publish the ui-guidelines {archive}",
         )
     require(
         "gh release create" in workflow,
@@ -505,6 +666,7 @@ def main() -> int:
         validate_finish_contract,
         validate_audit_ro_contract,
         validate_clean_tests_contract,
+        validate_ui_guidelines_contract,
         validate_repository_support,
     )
     try:
