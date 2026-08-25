@@ -8,6 +8,17 @@ Portable skills for repository delivery, evidence audits, goal-loop prompts, and
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
 
+This repository also ships repository tooling, not a skill: a user-level complexity gate that runs
+[`cccc`](https://github.com/moznion/cccc) after each agent edit and makes the model simplify a
+function that goes over the limit. It wires Claude Code, Codex, Copilot CLI, Grok, Cursor, Pi, and
+Hermes with one command:
+
+```bash
+./tools/cccc/install.sh
+```
+
+See [`tools/cccc/README.md`](tools/cccc/README.md).
+
 ## Quickstart (30-second setup)
 
 Run the skills.sh installer:

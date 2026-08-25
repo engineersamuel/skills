@@ -1,6 +1,7 @@
 repomix-output.xml
 docs/superpowers/*
 __pycache__/
+.venv/
 .env
 .env.*
 !.env.example

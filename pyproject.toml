@@ -18,6 +18,7 @@ quote-style = "double"
 
 [tool.ty.environment]
 python-version = "3.10"
+extra-paths = ["tools/cccc"]
 
 [tool.ty.src]
-include = ["scripts", "tests"]
+include = ["scripts", "tests", "tools"]
