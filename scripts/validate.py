@@ -36,6 +36,7 @@ def parse_frontmatter(markdown: str) -> dict[str, str]:
 
 def validate_metadata() -> None:
     skills = {
+        "audit-ro": "Audit RO",
         "finish": "Finish",
         "goal-me": "Goal Me",
         "justify": "Justify",
@@ -56,7 +57,7 @@ def validate_metadata() -> None:
             f"{name} frontmatter keys must be name, description, "
             "and optional disable-model-invocation",
         )
-        if name in {"finish", "goal-me"}:
+        if name in {"audit-ro", "finish", "goal-me"}:
             require(
                 fields.get("disable-model-invocation") == "true",
                 f"{name} must disable model invocation",
@@ -104,6 +105,7 @@ def validate_discovery() -> None:
         skill_files
         == [
             ".agents/skills/validate-repository/SKILL.md",
+            "skills/audit-ro/SKILL.md",
             "skills/finish/SKILL.md",
             "skills/goal-me/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
@@ -277,6 +279,92 @@ def validate_finish_contract() -> None:
     print("ok: finish behavior contract")
 
 
+def validate_audit_ro_contract() -> None:
+    skill = read("skills/audit-ro/SKILL.md").lower()
+    scenarios = {
+        "read only": (
+            "audit-only",
+            "do not edit repository files",
+            "do not run tests",
+            "outside the repository",
+            "repository remains unchanged",
+        ),
+        "baseline": (
+            "before substantive inspection or delegation",
+            "initial repository-state",
+            "content fingerprints for untracked files",
+            "version control",
+            "repeat the same snapshot procedure",
+            "status command by itself",
+            "unchanged-repository",
+        ),
+        "coverage": (
+            "coverage contract",
+            "stable id",
+            "exact, non-overlapping ownership boundary",
+            "public interfaces",
+            "major call sites",
+            "explicit skip decisions",
+            "broad catch-all rows",
+        ),
+        "bounded reviews": (
+            "bounded subsystem reviews",
+            "at most two",
+            "one consolidated wait mechanism",
+            "do not interrupt a productive worker",
+            "return `skip`",
+        ),
+        "finding schema": (
+            "exact file and line references",
+            "current complexity or invalid states",
+            "smallest credible implementation scope",
+            "regression risks and migration concerns",
+            "existing and additional validation required",
+            "confidence",
+        ),
+        "independent validation": (
+            "independently verify every worker finding",
+            "reject, narrow, or demote",
+            "superseded",
+            "one authoritative subsystem",
+        ),
+        "audit the audit": (
+            "repository coverage and missing subsystem boundaries",
+            "duplication and ownership overlap",
+            "materiality and over-abstraction",
+            "schema completeness",
+            "dependency-aware priority ranking",
+            "best first implementation slices",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(
+            not missing,
+            f"audit-ro {scenario} contract missing: {', '.join(missing)}",
+        )
+        print(f"ok: audit-ro {scenario} contract")
+
+    worker_brief = skill.split("give every worker this brief:", maxsplit=1)[1].split(
+        "if read-only workers are unavailable", maxsplit=1
+    )[0]
+    worker_restrictions = (
+        "this is read-only",
+        "do not edit files",
+        "run tests",
+        "commit",
+        "push",
+        "inspection-only commands",
+        "external to the repository",
+    )
+    missing = [phrase for phrase in worker_restrictions if phrase not in worker_brief]
+    require(
+        not missing,
+        f"audit-ro worker brief restrictions missing: {', '.join(missing)}",
+    )
+    print("ok: audit-ro worker read-only contract")
+
+
 def validate_repository_support() -> None:
     ignore = read(".gitignore").splitlines()
     require("repomix-output.xml" in ignore, "repomix-output.xml must be ignored")
@@ -293,6 +381,7 @@ def validate_repository_support() -> None:
     )
     require("goal-me" in readme, "README must document the goal-me skill")
     require("`finish`" in readme, "README must document the finish skill")
+    require("`audit-ro`" in readme, "README must document the audit-ro skill")
 
     workflow = read(".github/workflows/release.yml")
     require(
@@ -319,6 +408,10 @@ def validate_repository_support() -> None:
         "release workflow must package skills/finish as finish",
     )
     require(
+        "cp -R skills/audit-ro/. dist/staging/audit-ro/" in workflow,
+        "release workflow must package skills/audit-ro as audit-ro",
+    )
+    require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
     )
@@ -333,6 +426,7 @@ def main() -> int:
         validate_runwisp_job_authoring_contract,
         validate_goal_me_contract,
         validate_finish_contract,
+        validate_audit_ro_contract,
         validate_repository_support,
     )
     try:
