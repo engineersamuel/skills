@@ -1,8 +1,10 @@
 # Agent Skills
 
-Portable skills for repository delivery, evidence audits, goal-loop prompts, and RunWisp job-package authoring.
+Portable skills for repository delivery, evidence audits, test-suite cleanup,
+goal-loop prompts, and RunWisp job-package authoring.
 
 - `audit-ro` coordinates a complete, read-only codebase audit for materially useful simplifications.
+- `clean-tests` removes low-value tests while retaining stable, repository-owned behavioral contracts.
 - `finish` commits all current worktree changes after stopping for user review of questionable or ignore-worthy files, rebases on `origin/main`, creates a PR, enables squash auto-merge, and monitors it until merged.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
@@ -27,17 +29,27 @@ Run the skills.sh installer:
 npx skills@latest add engineersamuel/skills
 ```
 
-Select either skill and the coding agents where you want it installed.
+Select the skills and coding agents where you want them installed.
 
 Invoke the installed skill using your harness syntax:
 
 ```text
 Use $audit-ro to audit this codebase for material simplifications without changing it.
+Use $clean-tests to remove low-value tests and retain stable repository-owned contracts.
 Use $justify to audit the recommendation above.
 Use $goal-me to turn this request into a GOAL.md.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 Use $finish to commit this work and monitor its PR until merged.
 ```
+
+`clean-tests` will:
+
+- Remove tests that only prove feature presence, registration, provider shapes,
+  type-system guarantees, or volatile UI details.
+- Keep meaningful repository-owned input, output, state, error, side-effect,
+  adapter, and regression contracts.
+- Remove orphaned mocks, fixtures, snapshots, helpers, and test-only
+  dependencies, then run the repository's applicable checks.
 
 `goal-me` will:
 
@@ -51,7 +63,7 @@ Use $finish to commit this work and monitor its PR until merged.
 - Convene a real council for consequential or contested judgments.
 - Report a verdict, calibrated confidence, claim ledger, citations, and dissent.
 
-You’re ready to pressure-test your next claim or decision.
+You’re ready to use the installed skills.
 
 ## Direct install
 
@@ -59,6 +71,7 @@ Claude Code:
 
 ```bash
 npx skills add engineersamuel/skills --skill audit-ro --agent claude-code
+npx skills add engineersamuel/skills --skill clean-tests --agent claude-code
 npx skills add engineersamuel/skills --skill justify --agent claude-code
 npx skills add engineersamuel/skills --skill goal-me --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
@@ -69,6 +82,7 @@ Codex:
 
 ```bash
 npx skills add engineersamuel/skills --skill audit-ro --agent codex
+npx skills add engineersamuel/skills --skill clean-tests --agent codex
 npx skills add engineersamuel/skills --skill justify --agent codex
 npx skills add engineersamuel/skills --skill goal-me --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
@@ -101,13 +115,19 @@ npx skills add 'engineersamuel/skills#v1.0.0' --skill justify --agent codex
 
 Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `skills update` preserves the existing tag.
 
-Pin `runwisp-job-authoring` or `goal-me` only to a future release tag that contains it. This repository change does not create or move a tag.
+Pin `clean-tests`, `runwisp-job-authoring`, or `goal-me` only to a future
+release tag that contains it. This repository change does not create or move a
+tag.
 
 ## Requirements
 
 Local repository audits need no extra integration. External claims require an available web search or research capability, such as Exa, Perplexity, Tavily, Firecrawl, or another equivalent tool. No specific provider is required. Consequential or contested judgments require an installed `council` skill or equivalent deliberation workflow with independent live members.
 
 `audit-ro` is user-invoked only. It uses read-only workers when available, keeps its audit record outside the target repository, and does not run tests or modify the worktree.
+
+`clean-tests` uses the target repository's existing tools and adds no external
+provider dependency. It tests behavior owned by the repository instead of
+simulating provider compatibility.
 
 `justify` fails closed when a required capability is absent. It reports the missing pass instead of fabricating research or simulated council output.
 

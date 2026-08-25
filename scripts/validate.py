@@ -37,6 +37,7 @@ def parse_frontmatter(markdown: str) -> dict[str, str]:
 def validate_metadata() -> None:
     skills = {
         "audit-ro": "Audit RO",
+        "clean-tests": "Clean Tests",
         "finish": "Finish",
         "goal-me": "Goal Me",
         "justify": "Justify",
@@ -106,6 +107,7 @@ def validate_discovery() -> None:
         == [
             ".agents/skills/validate-repository/SKILL.md",
             "skills/audit-ro/SKILL.md",
+            "skills/clean-tests/SKILL.md",
             "skills/finish/SKILL.md",
             "skills/goal-me/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
@@ -365,6 +367,62 @@ def validate_audit_ro_contract() -> None:
     print("ok: audit-ro worker read-only contract")
 
 
+def validate_clean_tests_contract() -> None:
+    skill = read("skills/clean-tests/SKILL.md").lower()
+    scenarios = {
+        "inspection": (
+            "inspect before deleting",
+            "inventory the tests in scope",
+            "production code",
+            "name the exact repository-owned contract",
+        ),
+        "retention bar": (
+            "test contracts, not feature presence",
+            "meaningful regression",
+            "compiler, type checker, schema checker, or lint rule",
+            "do not optimize for test count or coverage percentage",
+        ),
+        "external providers": (
+            "do not simulate an external provider",
+            "external provider's raw api shape",
+            "for adapters such as discord",
+            "official sdk types or builders",
+            "do not invent a fake provider contract",
+            "provider compatibility as unverified",
+        ),
+        "ui and registration": (
+            "remove ui and ux tests heavily",
+            "element presence",
+            "slash command",
+            "handler registers",
+            "critical user interactions",
+        ),
+        "cleanup and verification": (
+            "do not replace a deleted test",
+            "do not delete production behavior",
+            "orphaned fixtures",
+            "type-check, lint, build, and test command",
+            "exact validation commands and outcomes",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(
+            not missing,
+            f"clean-tests {scenario} contract missing: {', '.join(missing)}",
+        )
+        print(f"ok: clean-tests {scenario} contract")
+
+    credit = read("skills/clean-tests/README.md")
+    source_url = "https://x.com/howaboua/status/2088998833954972031?s=51"
+    require(source_url in credit, "clean-tests README must credit the source post")
+    require(
+        "credit" in credit.lower(),
+        "clean-tests README must label the source attribution",
+    )
+    print("ok: clean-tests source credit")
+
+
 def validate_repository_support() -> None:
     ignore = read(".gitignore").splitlines()
     require("repomix-output.xml" in ignore, "repomix-output.xml must be ignored")
@@ -382,6 +440,7 @@ def validate_repository_support() -> None:
     require("goal-me" in readme, "README must document the goal-me skill")
     require("`finish`" in readme, "README must document the finish skill")
     require("`audit-ro`" in readme, "README must document the audit-ro skill")
+    require("`clean-tests`" in readme, "README must document the clean-tests skill")
 
     workflow = read(".github/workflows/release.yml")
     require(
@@ -412,6 +471,24 @@ def validate_repository_support() -> None:
         "release workflow must package skills/audit-ro as audit-ro",
     )
     require(
+        "cp -R skills/clean-tests/. dist/staging/clean-tests/" in workflow,
+        "release workflow must package skills/clean-tests as clean-tests",
+    )
+    require(
+        "cp LICENSE dist/staging/clean-tests/" in workflow,
+        "clean-tests release package must include the repository license",
+    )
+    require(
+        "cp README.md LICENSE dist/staging/clean-tests/" not in workflow,
+        "release packaging must preserve the credited clean-tests README",
+    )
+    for archive in ("tar.gz", "zip"):
+        asset = f'clean-tests-"${{GITHUB_REF_NAME}}".{archive}'
+        require(
+            workflow.count(asset) >= 2,
+            f"release workflow must checksum and publish the clean-tests {archive}",
+        )
+    require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
     )
@@ -427,6 +504,7 @@ def main() -> int:
         validate_goal_me_contract,
         validate_finish_contract,
         validate_audit_ro_contract,
+        validate_clean_tests_contract,
         validate_repository_support,
     )
     try:

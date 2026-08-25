@@ -90,6 +90,16 @@ jobs:
           tar -C dist/staging -czf "dist/audit-ro-${GITHUB_REF_NAME}.tar.gz" audit-ro
           (cd dist/staging && zip -qr "../audit-ro-${GITHUB_REF_NAME}.zip" audit-ro)
 
+          mkdir -p dist/staging/clean-tests
+          cp -R skills/clean-tests/. dist/staging/clean-tests/
+          cp LICENSE dist/staging/clean-tests/
+          tar -C dist/staging -czf \
+            "dist/clean-tests-${GITHUB_REF_NAME}.tar.gz" \
+            clean-tests
+          (cd dist/staging && zip -qr \
+            "../clean-tests-${GITHUB_REF_NAME}.zip" \
+            clean-tests)
+
           rm -rf dist/staging
           (cd dist && sha256sum \
             justify-"${GITHUB_REF_NAME}".tar.gz \
@@ -102,6 +112,8 @@ jobs:
             finish-"${GITHUB_REF_NAME}".zip \
             audit-ro-"${GITHUB_REF_NAME}".tar.gz \
             audit-ro-"${GITHUB_REF_NAME}".zip \
+            clean-tests-"${GITHUB_REF_NAME}".tar.gz \
+            clean-tests-"${GITHUB_REF_NAME}".zip \
             > SHA256SUMS)
 
       - name: Create GitHub release
@@ -119,6 +131,8 @@ jobs:
             dist/finish-"${GITHUB_REF_NAME}".zip \
             dist/audit-ro-"${GITHUB_REF_NAME}".tar.gz \
             dist/audit-ro-"${GITHUB_REF_NAME}".zip \
+            dist/clean-tests-"${GITHUB_REF_NAME}".tar.gz \
+            dist/clean-tests-"${GITHUB_REF_NAME}".zip \
             dist/SHA256SUMS \
             --generate-notes \
             --title "Agent Skills ${GITHUB_REF_NAME}" \
