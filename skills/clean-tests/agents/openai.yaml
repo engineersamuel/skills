@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clean Tests"
+  short_description: "Prune low-value tests and keep stable contracts"
+  default_prompt: "Use $clean-tests to remove low-value tests and retain stable repository-owned contracts."
