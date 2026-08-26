@@ -42,6 +42,7 @@ def validate_metadata() -> None:
         "goal-me": "Goal Me",
         "justify": "Justify",
         "runwisp-job-authoring": "RunWisp Job Authoring",
+        "trellage-guide": "Trellage Guide",
         "ui-guidelines": "UI Guidelines",
     }
     for name, display_name in skills.items():
@@ -114,6 +115,7 @@ def validate_discovery() -> None:
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/justify/SKILL.md",
             "skills/runwisp-job-authoring/SKILL.md",
+            "skills/trellage-guide/SKILL.md",
             "skills/ui-guidelines/SKILL.md",
         ],
         f"unexpected skill discovery set: {skill_files}",
@@ -256,6 +258,54 @@ def validate_goal_me_contract() -> None:
         missing = [phrase for phrase in required_phrases if phrase not in skill]
         require(not missing, f"{scenario} contract missing: {', '.join(missing)}")
         print(f"ok: goal-me {scenario} contract")
+
+
+def validate_trellage_guide_contract() -> None:
+    skill = read("skills/trellage-guide/SKILL.md").lower()
+    scenarios = {
+        "cli ownership": (
+            "installed `trx guide` service",
+            "do not duplicate",
+            "trx guide --help",
+            "schemaversion 1",
+            "do not approximate",
+        ),
+        "matching": (
+            "trx guide --json",
+            "stdin",
+            "exactly three",
+            "distinct `profileref`",
+            "wait for the user to select",
+        ),
+        "generation": (
+            "selected `profileref`",
+            "exactly three candidates",
+            "command.preview",
+            "command shape to match the selected profile",
+            "base arguments",
+            "prompt improver",
+        ),
+        "execution safety": (
+            "explicit confirmation",
+            "argument vector",
+            "never execute `command.preview`",
+            "manual-paste",
+            "restart interactive matching",
+        ),
+        "failure": (
+            "fail",
+            "do not repair or guess",
+            "literal/template fallbacks",
+            "do not force, delete, or guess resources",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(
+            not missing,
+            f"trellage-guide {scenario} contract missing: {', '.join(missing)}",
+        )
+        print(f"ok: trellage-guide {scenario} contract")
 
 
 def validate_finish_contract() -> None:
@@ -582,6 +632,10 @@ def validate_repository_support() -> None:
     require("`audit-ro`" in readme, "README must document the audit-ro skill")
     require("`clean-tests`" in readme, "README must document the clean-tests skill")
     require(
+        "`trellage-guide`" in readme,
+        "README must document the trellage-guide skill",
+    )
+    require(
         "`ui-guidelines`" in readme,
         "README must document the ui-guidelines skill",
     )
@@ -631,6 +685,10 @@ def validate_repository_support() -> None:
         "release workflow must package ui-guidelines independently",
     )
     require(
+        "cp -R skills/trellage-guide/. dist/staging/trellage-guide/" in workflow,
+        "release workflow must package trellage-guide independently",
+    )
+    require(
         "cp LICENSE dist/staging/ui-guidelines/" in workflow,
         "ui-guidelines release package must include the repository license",
     )
@@ -649,6 +707,11 @@ def validate_repository_support() -> None:
             workflow.count(asset) >= 2,
             f"release workflow must checksum and publish the ui-guidelines {archive}",
         )
+        asset = f'trellage-guide-"${{GITHUB_REF_NAME}}".{archive}'
+        require(
+            workflow.count(asset) >= 2,
+            f"release workflow must checksum and publish the trellage-guide {archive}",
+        )
     require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
@@ -663,6 +726,7 @@ def main() -> int:
         validate_behavior_contract,
         validate_runwisp_job_authoring_contract,
         validate_goal_me_contract,
+        validate_trellage_guide_contract,
         validate_finish_contract,
         validate_audit_ro_contract,
         validate_clean_tests_contract,

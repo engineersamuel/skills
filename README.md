@@ -1,7 +1,8 @@
 # Agent Skills
 
 Portable skills for repository delivery, evidence audits, test-suite cleanup,
-interface quality, goal-loop prompts, and RunWisp job-package authoring.
+interface quality, goal-loop prompts, Trellage profile routing, and RunWisp
+job-package authoring.
 
 - `audit-ro` coordinates a complete, read-only codebase audit for materially useful simplifications.
 - `clean-tests` removes low-value tests while retaining stable, repository-owned behavioral contracts.
@@ -9,6 +10,7 @@ interface quality, goal-loop prompts, and RunWisp job-package authoring.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
+- `trellage-guide` matches an intent to Trellage profiles and workflows, generates prompt choices, and prepares confirmed terminal or Herdr handoff.
 - `ui-guidelines` applies practical visual, motion, typography, color, accessibility, layout, and writing rules to UI, frontend, HTML, and CSS work.
 
 This repository also ships repository tooling, not a skill: a user-level complexity gate that runs
@@ -41,6 +43,7 @@ Use $justify to audit the recommendation above.
 Use $goal-me to turn this request into a GOAL.md.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 Use $finish to commit this work and monitor its PR until merged.
+Use $trellage-guide to choose a Trellage profile and generate prompt choices.
 Use $ui-guidelines to improve this UI or HTML.
 ```
 
@@ -65,6 +68,13 @@ Use $ui-guidelines to improve this UI or HTML.
 - Convene a real council for consequential or contested judgments.
 - Report a verdict, calibrated confidence, claim ledger, citations, and dissent.
 
+`trellage-guide` will:
+
+- Call the installed side-effect-free `trx guide --json` API for matching and prompt generation.
+- Present three profile recommendations, then three prompt candidates.
+- Require confirmation before terminal launch or interactive Herdr handoff.
+- Fail closed when the installed Trellage guide contract is missing or invalid.
+
 `ui-guidelines` will:
 
 - Be eligible for automatic invocation when work involves a user interface,
@@ -87,6 +97,7 @@ npx skills add engineersamuel/skills --skill justify --agent claude-code
 npx skills add engineersamuel/skills --skill goal-me --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 npx skills add engineersamuel/skills --skill finish --agent claude-code
+npx skills add engineersamuel/skills --skill trellage-guide --agent claude-code
 npx skills add engineersamuel/skills --skill ui-guidelines --agent claude-code
 ```
 
@@ -99,6 +110,7 @@ npx skills add engineersamuel/skills --skill justify --agent codex
 npx skills add engineersamuel/skills --skill goal-me --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 npx skills add engineersamuel/skills --skill finish --agent codex
+npx skills add engineersamuel/skills --skill trellage-guide --agent codex
 npx skills add engineersamuel/skills --skill ui-guidelines --agent codex
 ```
 
@@ -147,6 +159,10 @@ simulating provider compatibility.
 `runwisp-job-authoring` needs access to the target repository and current Jobkit documentation. Running `doctor` or a safe dry run also requires an installed `runwisp-job` command and the package's declared runtime inputs.
 
 `goal-me` needs write access to the current working directory. It uses an installed `grill-me` skill when one is present.
+
+`trellage-guide` requires a current Trellage installation whose `trx guide`
+help reports the schema version 1 JSON API. Model authentication and profile
+readiness remain owned by Trellage.
 
 ## Validate
 
