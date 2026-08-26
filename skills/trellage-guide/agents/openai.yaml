@@ -1,0 +1,4 @@
+interface:
+  display_name: "Trellage Guide"
+  short_description: "Route tasks to Trellage profiles and prompts"
+  default_prompt: "Use $trellage-guide to match this intent to a Trellage profile and prepare prompt choices."

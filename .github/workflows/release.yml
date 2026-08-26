@@ -110,6 +110,16 @@ jobs:
             "../ui-guidelines-${GITHUB_REF_NAME}.zip" \
             ui-guidelines)
 
+          mkdir -p dist/staging/trellage-guide
+          cp -R skills/trellage-guide/. dist/staging/trellage-guide/
+          cp README.md LICENSE dist/staging/trellage-guide/
+          tar -C dist/staging -czf \
+            "dist/trellage-guide-${GITHUB_REF_NAME}.tar.gz" \
+            trellage-guide
+          (cd dist/staging && zip -qr \
+            "../trellage-guide-${GITHUB_REF_NAME}.zip" \
+            trellage-guide)
+
           rm -rf dist/staging
           (cd dist && sha256sum \
             justify-"${GITHUB_REF_NAME}".tar.gz \
@@ -126,6 +136,8 @@ jobs:
             clean-tests-"${GITHUB_REF_NAME}".zip \
             ui-guidelines-"${GITHUB_REF_NAME}".tar.gz \
             ui-guidelines-"${GITHUB_REF_NAME}".zip \
+            trellage-guide-"${GITHUB_REF_NAME}".tar.gz \
+            trellage-guide-"${GITHUB_REF_NAME}".zip \
             > SHA256SUMS)
 
       - name: Create GitHub release
@@ -147,6 +159,8 @@ jobs:
             dist/clean-tests-"${GITHUB_REF_NAME}".zip \
             dist/ui-guidelines-"${GITHUB_REF_NAME}".tar.gz \
             dist/ui-guidelines-"${GITHUB_REF_NAME}".zip \
+            dist/trellage-guide-"${GITHUB_REF_NAME}".tar.gz \
+            dist/trellage-guide-"${GITHUB_REF_NAME}".zip \
             dist/SHA256SUMS \
             --generate-notes \
             --title "Agent Skills ${GITHUB_REF_NAME}" \
