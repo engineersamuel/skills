@@ -58,8 +58,34 @@ Use $ui-guidelines to improve this UI or HTML.
 
 `goal-me` will:
 
-- Interview until `TASK` and `SUCCESS CRITERIA` are strict enough to score.
-- Write the filled goal-loop prompt to `GOAL.md`, or `GOAL-<id>.md` if `GOAL.md` already exists.
+- Discover available inputs and checks, then interview until you confirm one
+  coherent outcome, its artifacts, constraints, and at least three independent
+  criteria. Any deliverable can use commands or evidence-based scoring rubrics.
+- Define observable targets, verification methods, required pass/fail checks,
+  and a compact action catalog. Scores start uninitialized.
+- Write only the filled prompt to `GOAL.md` in the current directory, or an
+  unused `GOAL-<four lowercase hex digits>.md` on collision, and report its path
+  without executing it.
+
+The embedded loop measures before acting, prioritizes the weakest criterion
+and its prerequisites, verifies changes, and retains improvements without
+regressions. It recovers unsuccessful changes while preserving unrelated work.
+Success definitions stay fixed; measurement-tool improvements require separate
+reliability evidence and comparable before/after checks.
+
+Execution defaults to bounded convergence: `FINAL` requires every criterion to
+score at least 8/10 and every required check to pass. Otherwise it records
+`STOPPED` after 20 iterations, 5 consecutive attempts without verified progress,
+or an external blocker that prevents further in-scope work. You can choose other
+limits during authoring. Resumption reverifies the artifact and preserves
+counters. Baseline/current evidence, the five most recent attempts, and at most
+eight learnings stay in the same file. Stopping reports include results,
+retained changes, remaining gaps, and the next useful action.
+
+The measurement, action catalog, before/after comparison, and stopping conditions
+build on [goal-md](https://github.com/jmilinovich/goal-md) and its
+[GOAL.md](https://github.com/jmilinovich/goal-md/blob/main/GOAL.md), adapted to
+`goal-me`'s single-file handoff and weakest-first loop.
 
 `justify` will:
 
