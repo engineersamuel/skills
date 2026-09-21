@@ -223,41 +223,118 @@ def validate_runwisp_job_authoring_contract() -> None:
 
 
 def validate_goal_me_contract() -> None:
-    skill = read("skills/goal-me/SKILL.md").lower()
-    scenarios = {
-        "grill": (
-            "grill-me",
-            "task",
-            "success criteria",
-            "shared understanding",
-        ),
-        "readiness": (
-            "one exact artifact",
-            "1-10",
-            "at least three",
-        ),
-        "write": (
-            "current working directory",
-            "goal.md",
-            "four lowercase hex",
-        ),
-        "handoff": (
-            "written path",
-            "the file is the handoff",
-            "do not execute the loop",
-        ),
-        "persistence": (
-            "scoreboard",
-            "learnings",
-            "this file is the only memory",
-            "re-score from the artifact",
-            "do not create a second progress file",
-        ),
-    }
-    for scenario, required_phrases in scenarios.items():
-        missing = [phrase for phrase in required_phrases if phrase not in skill]
-        require(not missing, f"{scenario} contract missing: {', '.join(missing)}")
-        print(f"ok: goal-me {scenario} contract")
+    skill = read("skills/goal-me/SKILL.md")
+    prompts = re.findall(r"^```(?:text)?\n(.*?)^```$", skill, flags=re.M | re.S)
+    require(len(prompts) == 1, "goal-me must embed one complete Goal Prompt")
+    prompt = prompts[0]
+    authoring = skill.split("```", 1)[0].lower()
+    for concept in (
+        "grill-me",
+        "shared understanding",
+        "at least three",
+        "current working directory",
+        "four lowercase hex",
+        "written path",
+        "do not execute the loop",
+    ):
+        require(concept in authoring, f"goal-me authoring contract missing: {concept}")
+
+    # Validate the handoff schema, not a snapshot of the surrounding prose.
+    sections = re.findall(r"^([A-Z][A-Z ]+):$", prompt, flags=re.M)
+    require(
+        sections
+        == [
+            "TASK",
+            "INPUTS AND ARTIFACTS",
+            "CONSTRAINTS",
+            "SUCCESS CRITERIA",
+            "REQUIRED CHECKS",
+            "ACTION CATALOG",
+            "EXECUTION LIMITS",
+            "SCOREBOARD",
+            "RECENT ATTEMPTS",
+            "LEARNINGS",
+            "LOOP PROTOCOL",
+            "RULES",
+        ],
+        f"goal-me embedded prompt sections differ: {sections}",
+    )
+    steps = re.findall(r"^\d+\. ([A-Z]+(?: OR [A-Z]+)?)\b", prompt, flags=re.M)
+    require(
+        steps
+        == [
+            "READ",
+            "MEASURE",
+            "CHOOSE",
+            "ACT",
+            "VERIFY",
+            "RETAIN OR RECOVER",
+            "RECORD",
+            "DECIDE",
+        ],
+        f"goal-me loop order differs: {steps}",
+    )
+    limits = prompt.split("EXECUTION LIMITS:\n", 1)[1].split("\nSCOREBOARD:", 1)[0]
+    for field, value in (
+        ("Max iterations", 20),
+        ("Max consecutive no-progress attempts", 5),
+    ):
+        require(
+            re.search(rf"^{field}: {value}$", limits, flags=re.M) is not None,
+            f"goal-me default {field} must be {value}",
+        )
+    scoreboard = prompt.split("SCOREBOARD:\n", 1)[1].split("\nRECENT ATTEMPTS:", 1)[0]
+    for field, value in (
+        ("Status", "ITERATING"),
+        ("Iterations", "0"),
+        ("Consecutive no-progress attempts", "0"),
+        ("Pending attempt", "none"),
+        ("Weakest", "_"),
+        ("Next action", "_"),
+        ("Stop reason", "_"),
+    ):
+        require(f"{field}: {value}" in scoreboard, f"goal-me must initialize {field}")
+    rows = [line for line in scoreboard.splitlines() if re.match(r"\| C\d+ ", line)]
+    require(len(rows) >= 3, "goal-me scoreboard needs at least three criteria")
+    require(
+        all(re.fullmatch(r"\| C\d+ \| _ \| _ \| _ \|", row) for row in rows),
+        "goal-me baseline/current scores and evidence must start uninitialized",
+    )
+    for column in ("Baseline", "Current", "Evidence"):
+        require(column in scoreboard, f"goal-me scoreboard missing {column}")
+    for column in ("Target", "Verification", "8/10", "10/10", "Expected benefit"):
+        require(column in prompt, f"goal-me measurement/action schema missing {column}")
+    decide = prompt.split("8. DECIDE", 1)[1].split("\nRULES:", 1)[0].lower()
+    for concept in (
+        "final",
+        "8/10",
+        "every required check",
+        "pass",
+        "stopped",
+        "iterating",
+    ):
+        require(concept in decide, f"goal-me decision contract missing: {concept}")
+    for pattern, message in (
+        (r"five most recent attempts", "bounded attempt history"),
+        (r"at most 8", "bounded learnings"),
+        (r"same calibrated checks", "comparable measurements"),
+        (r"preserve.*counters", "resumption counters"),
+        (r"pre-existing work", "safe recovery"),
+        (r"external blocker", "blocker stop"),
+        (r"required.check.*regression", "required-check regression gate"),
+        (r"unverified", "missing evidence"),
+        (r"do not create a second progress file", "single-file memory"),
+    ):
+        require(
+            re.search(pattern, prompt, flags=re.I) is not None,
+            f"goal-me embedded prompt missing {message}",
+        )
+    readme = read("README.md")
+    require(
+        "https://github.com/jmilinovich/goal-md" in readme,
+        "goal-me README must credit goal-md",
+    )
+    print("ok: goal-me authoring and embedded prompt contract")
 
 
 def validate_trellage_guide_contract() -> None:
