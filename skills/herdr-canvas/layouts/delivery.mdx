@@ -1,0 +1,28 @@
+import { Graph, Callout, Steps, GraphCheck, GraphTimeline } from '@canvas/runtime'
+
+export function DeliveryCanvas() {
+  const canvas = data.canvas ?? {}
+  const steps = Array.isArray(canvas.steps) ? canvas.steps.slice(0, 24) : []
+  const findings = Array.isArray(canvas.findings) ? canvas.findings.slice(0, 12) : []
+  const changes = Array.isArray(canvas.changes) ? canvas.changes.slice(0, 16) : []
+  const checks = Array.isArray(canvas.checks) ? canvas.checks.slice(0, 16) : []
+  const events = Array.isArray(canvas.events) ? canvas.events.slice(-8) : []
+  const phase = typeof canvas.phase === 'string' ? canvas.phase : 'working'
+  const activity = typeof canvas.activity === 'string' ? canvas.activity : 'Starting delivery'
+  return <Graph title={typeof canvas.title === 'string' ? canvas.title : 'Delivery'}>
+    <Callout title={`${phase.toUpperCase()} - CURRENT ACTIVITY`} type={phase}>
+      <p>{activity}</p>
+    </Callout>
+    {steps.length > 0 ? <Steps title="Delivery steps" items={steps} /> : null}
+    {changes.length > 0 ? <section><h2>Changes</h2><ul>{changes.map((change, index) =>
+      <li key={`${change?.path ?? 'change'}-${index}`}><strong>{change?.path ?? 'Changed surface'}</strong>: {change?.summary ?? ''}</li>
+    )}</ul></section> : null}
+    {findings.length > 0 ? <section><h2>Results</h2><ul>{findings.map((finding, index) =>
+      <li key={`${finding}-${index}`}>{finding}</li>
+    )}</ul></section> : null}
+    {checks.length > 0 ? <GraphCheck title="Verification" items={checks} /> : null}
+    {events.length > 0 ? <GraphTimeline title="Recent activity" items={events} /> : null}
+  </Graph>
+}
+
+<DeliveryCanvas />

@@ -1,0 +1,320 @@
+{
+  "rangeStatus": {
+    "title": "1. Range status: all records",
+    "unit": "records",
+    "population": "299,705 export rows",
+    "scale": {
+      "kind": "count",
+      "min": 0,
+      "max": 196235,
+      "label": "0 to 196,235 records"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 20,
+      "precision": 0
+    },
+    "data": [
+      {
+        "label": "Unresearched / zero",
+        "value": 196235
+      },
+      {
+        "label": "Positive recorded",
+        "value": 103444
+      },
+      {
+        "label": "Blank",
+        "value": 26
+      }
+    ]
+  },
+  "yearCoverage": {
+    "title": "Coverage by model year",
+    "unit": "%",
+    "population": "All records with a model year",
+    "denominator": "299,705 export rows",
+    "scale": {
+      "kind": "proportion-percent",
+      "min": 0,
+      "max": 100,
+      "label": "0 to 100%"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 20,
+      "precision": 5
+    },
+    "data": [
+      {
+        "label": "2018",
+        "value": 99.9897
+      },
+      {
+        "label": "2024",
+        "value": 0.29118
+      }
+    ]
+  },
+  "digitLabels": {
+    "title": "Models and intervals",
+    "unit": "observations",
+    "population": "Selected observations",
+    "scale": {
+      "kind": "count",
+      "min": 0,
+      "max": 7,
+      "label": "0 to 7 observations"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 16,
+      "precision": 0
+    },
+    "data": [
+      {
+        "label": "Model 3",
+        "value": 7
+      },
+      {
+        "label": "25-49",
+        "value": 4
+      }
+    ]
+  },
+  "equalValues": {
+    "title": "Equal values",
+    "unit": "records",
+    "population": "Test fixture",
+    "scale": {
+      "kind": "count",
+      "min": 0,
+      "max": 5,
+      "label": "0 to 5 records"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 12,
+      "precision": 0
+    },
+    "data": [
+      {
+        "label": "Alpha",
+        "value": 5
+      },
+      {
+        "label": "Beta",
+        "value": 5
+      }
+    ]
+  },
+  "missingStates": {
+    "title": "Zero and missing states",
+    "unit": "records",
+    "population": "Test fixture",
+    "scale": {
+      "kind": "count",
+      "min": 0,
+      "max": 1,
+      "label": "0 to 1 records"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 12,
+      "precision": 0
+    },
+    "data": [
+      {
+        "label": "Measured zero",
+        "value": 0
+      },
+      {
+        "label": "Blank",
+        "value": null,
+        "state": "blank in source"
+      },
+      {
+        "label": "Unknown",
+        "value": null,
+        "state": "unknown in source"
+      }
+    ]
+  },
+  "percentageChanges": {
+    "title": "Percentage changes",
+    "unit": "%",
+    "population": "Compared periods",
+    "scale": {
+      "kind": "signed-percent-change",
+      "label": "Signed percentage change; not a proportion scale"
+    },
+    "display": {
+      "kind": "table",
+      "precision": 0
+    },
+    "data": [
+      {
+        "label": "Decrease",
+        "value": -12
+      },
+      {
+        "label": "Increase",
+        "value": 135
+      }
+    ]
+  },
+  "tinyPositive": {
+    "title": "Tiny positive values",
+    "unit": "ratio",
+    "population": "Test fixture",
+    "scale": {
+      "kind": "quantity",
+      "min": 0,
+      "max": 0.00009,
+      "label": "0 to 0.00009 ratio"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 12,
+      "precision": 8
+    },
+    "data": [
+      {
+        "label": "Rare event",
+        "value": 0.0000042
+      }
+    ]
+  },
+  "manyCategories": {
+    "title": "Twenty-five categories",
+    "unit": "records",
+    "population": "All 25 fixture categories",
+    "scale": {
+      "kind": "count",
+      "min": 0,
+      "max": 25,
+      "label": "0 to 25 records"
+    },
+    "display": {
+      "kind": "table",
+      "precision": 0
+    },
+    "data": [
+      { "label": "Category 01", "value": 1 },
+      { "label": "Category 02", "value": 2 },
+      { "label": "Category 03", "value": 3 },
+      { "label": "Category 04", "value": 4 },
+      { "label": "Category 05", "value": 5 },
+      { "label": "Category 06", "value": 6 },
+      { "label": "Category 07", "value": 7 },
+      { "label": "Category 08", "value": 8 },
+      { "label": "Category 09", "value": 9 },
+      { "label": "Category 10", "value": 10 },
+      { "label": "Category 11", "value": 11 },
+      { "label": "Category 12", "value": 12 },
+      { "label": "Category 13", "value": 13 },
+      { "label": "Category 14", "value": 14 },
+      { "label": "Category 15", "value": 15 },
+      { "label": "Category 16", "value": 16 },
+      { "label": "Category 17", "value": 17 },
+      { "label": "Category 18", "value": 18 },
+      { "label": "Category 19", "value": 19 },
+      { "label": "Category 20", "value": 20 },
+      { "label": "Category 21", "value": 21 },
+      { "label": "Category 22", "value": 22 },
+      { "label": "Category 23", "value": 23 },
+      { "label": "Category 24", "value": 24 },
+      { "label": "Category 25", "value": 25 }
+    ]
+  },
+  "longLabels": {
+    "title": "Long category labels",
+    "unit": "records",
+    "population": "Test fixture",
+    "scale": {
+      "kind": "count",
+      "min": 0,
+      "max": 12,
+      "label": "0 to 12 records"
+    },
+    "display": {
+      "kind": "bars",
+      "barWidth": 12,
+      "precision": 0
+    },
+    "data": [
+      {
+        "label": "A long category label that must remain readable in a narrow terminal",
+        "value": 12
+      }
+    ]
+  },
+  "malformed": [
+    {
+      "title": "Missing label",
+      "unit": "records",
+      "population": "Test fixture",
+      "scale": {
+        "kind": "count",
+        "min": 0,
+        "max": 1,
+        "label": "0 to 1 records"
+      },
+      "display": {
+        "kind": "bars",
+        "barWidth": 12,
+        "precision": 0
+      },
+      "data": [
+        {
+          "label": "",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "Invalid numeric value",
+      "unit": "records",
+      "population": "Test fixture",
+      "scale": {
+        "kind": "count",
+        "min": 0,
+        "max": 1,
+        "label": "0 to 1 records"
+      },
+      "display": {
+        "kind": "bars",
+        "barWidth": 12,
+        "precision": 0
+      },
+      "data": [
+        {
+          "label": "Broken",
+          "value": "not-a-number"
+        }
+      ]
+    },
+    {
+      "title": "Unlabelled null",
+      "unit": "records",
+      "population": "Test fixture",
+      "scale": {
+        "kind": "count",
+        "min": 0,
+        "max": 1,
+        "label": "0 to 1 records"
+      },
+      "display": {
+        "kind": "bars",
+        "barWidth": 12,
+        "precision": 0
+      },
+      "data": [
+        {
+          "label": "Missing",
+          "value": null
+        }
+      ]
+    }
+  ]
+}

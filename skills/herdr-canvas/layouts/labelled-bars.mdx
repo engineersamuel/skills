@@ -1,0 +1,129 @@
+import { Graph } from '@canvas/runtime'
+
+export function requireText(value, field) {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    throw new Error(`${field} must be a non-empty string`)
+  }
+  return value.trim()
+}
+
+export function requireInteger(value, field, minimum, maximum) {
+  if (!Number.isInteger(value) || value < minimum || value > maximum) {
+    throw new Error(`${field} must be an integer from ${minimum} to ${maximum}`)
+  }
+  return value
+}
+
+export function formatNumber(value, precision) {
+  if (!Number.isFinite(value)) throw new Error('Chart values must be finite numbers')
+  const fixed = value.toFixed(precision)
+  const parts = fixed.split('.')
+  const whole = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const decimals = (parts[1] ?? '').replace(/0+$/g, '')
+  if (value !== 0 && Number(`${parts[0]}.${decimals || '0'}`) === 0) {
+    return String(value)
+  }
+  return decimals.length === 0 ? whole : `${whole}.${decimals}`
+}
+
+export function validateChart(chart) {
+  if (typeof chart !== 'object' || chart === null || Array.isArray(chart)) {
+    throw new Error('Chart data must be an object')
+  }
+  const title = requireText(chart.title, 'title')
+  const unit = requireText(chart.unit, 'unit')
+  const population = requireText(chart.population, 'population')
+  const scale = chart.scale
+  if (typeof scale !== 'object' || scale === null || Array.isArray(scale)) {
+    throw new Error('scale must be an object')
+  }
+  const scaleKind = requireText(scale.kind, 'scale.kind')
+  const scaleLabel = requireText(scale.label, 'scale.label')
+  const display = chart.display
+  if (typeof display !== 'object' || display === null || Array.isArray(display)) {
+    throw new Error('display must be an object')
+  }
+  if (display.kind !== 'bars' && display.kind !== 'table') {
+    throw new Error('display.kind must be bars or table')
+  }
+  const precision = requireInteger(display.precision, 'display.precision', 0, 12)
+  const barWidth = display.kind === 'bars'
+    ? requireInteger(display.barWidth, 'display.barWidth', 8, 40)
+    : 0
+  if (!Array.isArray(chart.data) || chart.data.length === 0) {
+    throw new Error('data must contain at least one observation')
+  }
+  const rows = chart.data.map((row, index) => {
+    if (typeof row !== 'object' || row === null || Array.isArray(row)) {
+      throw new Error(`data[${index}] must be an object`)
+    }
+    const label = requireText(row.label, `data[${index}].label`)
+    if (row.value === null || row.value === undefined) {
+      return {
+        label,
+        value: null,
+        state: requireText(row.state, `data[${index}].state`)
+      }
+    }
+    if (typeof row.value !== 'number' || !Number.isFinite(row.value)) {
+      throw new Error(`data[${index}].value must be a finite number`)
+    }
+    return { label, value: row.value, state: null }
+  })
+  if (display.kind === 'bars') {
+    if (!Number.isFinite(scale.min) || scale.min !== 0) {
+      throw new Error('Bar chart scale.min must be 0')
+    }
+    if (!Number.isFinite(scale.max) || scale.max <= 0) {
+      throw new Error('Bar chart scale.max must be a positive finite number')
+    }
+    for (const row of rows) {
+      if (row.value !== null && (row.value < 0 || row.value > scale.max)) {
+        throw new Error('Bar values must be nonnegative and within scale.max; use a labelled table for signed or unsupported values')
+      }
+    }
+    if (scaleKind === 'proportion-percent' && scale.max !== 100) {
+      throw new Error('Proportion percentages must use a 0 to 100 scale')
+    }
+  }
+  if (scaleKind === 'proportion-percent') {
+    requireText(chart.denominator, 'denominator')
+  }
+  return {
+    title,
+    unit,
+    population,
+    denominator: typeof chart.denominator === 'string' && chart.denominator.trim().length > 0
+      ? chart.denominator.trim()
+      : null,
+    note: typeof chart.note === 'string' && chart.note.trim().length > 0
+      ? chart.note.trim()
+      : null,
+    scaleLabel,
+    displayKind: display.kind,
+    precision,
+    barWidth,
+    scaleMax: scale.max,
+    rows
+  }
+}
+
+export function LabelledChart({ chart }) {
+  const safe = validateChart(chart)
+  const lines = safe.rows.map(row => {
+    if (row.value === null) return `${row.label} | [${row.state}]`
+    const value = `${formatNumber(row.value, safe.precision)}${safe.unit === '%' ? '%' : ` ${safe.unit}`}`
+    if (safe.displayKind === 'table') return `${row.label} | ${value}`
+    const length = Math.round((row.value / safe.scaleMax) * safe.barWidth)
+    return `${row.label} | ${'█'.repeat(length)} ${value}`
+  })
+  return <Graph title={safe.title}>
+    <pre>{lines.join('\n')}</pre>
+    <p>{`Scale: ${safe.scaleLabel}`}</p>
+    <p>{`Population: ${safe.population}`}</p>
+    {safe.denominator === null ? null : <p>{`Denominator: ${safe.denominator}`}</p>}
+    {safe.note === null ? null : <p>{safe.note}</p>}
+  </Graph>
+}
+
+<LabelledChart chart={data.chart} />

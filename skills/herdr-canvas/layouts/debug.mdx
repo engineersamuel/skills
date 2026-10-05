@@ -1,0 +1,28 @@
+import { Graph, Callout, Steps, GraphCheck, GraphTimeline } from '@canvas/runtime'
+
+export function DebugCanvas() {
+  const canvas = data.canvas ?? {}
+  const steps = Array.isArray(canvas.steps) ? canvas.steps.slice(0, 24) : []
+  const findings = Array.isArray(canvas.findings) ? canvas.findings.slice(0, 12) : []
+  const hypotheses = Array.isArray(canvas.hypotheses) ? canvas.hypotheses.slice(0, 12) : []
+  const checks = Array.isArray(canvas.checks) ? canvas.checks.slice(0, 16) : []
+  const events = Array.isArray(canvas.events) ? canvas.events.slice(-8) : []
+  const phase = typeof canvas.phase === 'string' ? canvas.phase : 'working'
+  const activity = typeof canvas.activity === 'string' ? canvas.activity : 'Collecting evidence'
+  return <Graph title={typeof canvas.title === 'string' ? canvas.title : 'Investigation'}>
+    <Callout title={`${phase.toUpperCase()} - CURRENT ACTIVITY`} type={phase}>
+      <p>{activity}</p>
+    </Callout>
+    {hypotheses.length > 0 ? <section><h2>Hypotheses</h2><ul>{hypotheses.map((hypothesis, index) =>
+      <li key={`${hypothesis?.label ?? 'hypothesis'}-${index}`}><strong>{hypothesis?.status ?? 'untested'}</strong>: {hypothesis?.label ?? 'Hypothesis'}{hypothesis?.evidence ? ` - ${hypothesis.evidence}` : ''}</li>
+    )}</ul></section> : null}
+    {steps.length > 0 ? <Steps title="Experiments" items={steps} /> : null}
+    {findings.length > 0 ? <section><h2>Findings</h2><ul>{findings.map((finding, index) =>
+      <li key={`${finding}-${index}`}>{finding}</li>
+    )}</ul></section> : null}
+    {checks.length > 0 ? <GraphCheck title="Evidence" items={checks} /> : null}
+    {events.length > 0 ? <GraphTimeline title="Recent activity" items={events} /> : null}
+  </Graph>
+}
+
+<DebugCanvas />

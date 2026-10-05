@@ -1,0 +1,30 @@
+import { Graph, Callout, Steps, GraphTimeline } from '@canvas/runtime'
+
+export function PlanningCanvas() {
+  const canvas = data.canvas ?? {}
+  const steps = Array.isArray(canvas.steps) ? canvas.steps.slice(0, 24) : []
+  const findings = Array.isArray(canvas.findings) ? canvas.findings.slice(0, 12) : []
+  const options = Array.isArray(canvas.options) ? canvas.options.slice(0, 8) : []
+  const decisions = Array.isArray(canvas.decisions) ? canvas.decisions.slice(0, 8) : []
+  const events = Array.isArray(canvas.events) ? canvas.events.slice(-8) : []
+  const phase = typeof canvas.phase === 'string' ? canvas.phase : 'planning'
+  const activity = typeof canvas.activity === 'string' ? canvas.activity : 'Preparing the plan'
+  return <Graph title={typeof canvas.title === 'string' ? canvas.title : 'Planning'}>
+    <Callout title={`${phase.toUpperCase()} - CURRENT ACTIVITY`} type={phase}>
+      <p>{activity}</p>
+    </Callout>
+    {steps.length > 0 ? <Steps title="Plan" items={steps} /> : null}
+    {options.length > 0 ? <section><h2>Options</h2><ul>{options.map((option, index) =>
+      <li key={`${option?.label ?? 'option'}-${index}`}><strong>{option?.label ?? 'Option'}</strong>: {option?.tradeoff ?? ''}</li>
+    )}</ul></section> : null}
+    {findings.length > 0 ? <section><h2>Findings</h2><ul>{findings.map((finding, index) =>
+      <li key={`${finding}-${index}`}>{finding}</li>
+    )}</ul></section> : null}
+    {decisions.length > 0 ? <section><h2>Decisions</h2><ul>{decisions.map((decision, index) =>
+      <li key={`${decision?.question ?? 'decision'}-${index}`}>{decision?.question ?? 'Decision'}{decision?.answer ? `: ${decision.answer}` : ': unresolved'}</li>
+    )}</ul></section> : null}
+    {events.length > 0 ? <GraphTimeline title="Recent activity" items={events} /> : null}
+  </Graph>
+}
+
+<PlanningCanvas />
