@@ -1,0 +1,15 @@
+[tools]
+bun = "1.4.2"
+
+[tasks.herdr-canvas]
+description = "Install or upgrade Herdr Canvas for Copilot, Claude Code, Codex, and Pi"
+run = """
+cd tools/canvas
+bun install --frozen-lockfile
+bun run runtime:package
+bun run verify
+bun scripts/install.ts \
+  --scope user \
+  --hosts copilot,claude,codex,pi \
+  --replace-existing-mcp
+"""

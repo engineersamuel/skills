@@ -1,0 +1,4 @@
+interface:
+  display_name: "Herdr Canvas"
+  short_description: "Maintain a live Herdr task canvas"
+  default_prompt: "Canvas on. Use $herdr-canvas to open and maintain a live Herdr canvas for this task."

@@ -40,6 +40,7 @@ def validate_metadata() -> None:
         "clean-tests": "Clean Tests",
         "finish": "Finish",
         "goal-me": "Goal Me",
+        "herdr-canvas": "Herdr Canvas",
         "justify": "Justify",
         "runwisp-job-authoring": "RunWisp Job Authoring",
         "trellage-guide": "Trellage Guide",
@@ -113,6 +114,7 @@ def validate_discovery() -> None:
             "skills/finish/SKILL.md",
             "skills/goal-me/SKILL.md",
             "skills/grilling-frontend-prototyping/SKILL.md",
+            "skills/herdr-canvas/SKILL.md",
             "skills/justify/SKILL.md",
             "skills/runwisp-job-authoring/SKILL.md",
             "skills/trellage-guide/SKILL.md",
@@ -335,6 +337,112 @@ def validate_goal_me_contract() -> None:
         "goal-me README must credit goal-md",
     )
     print("ok: goal-me authoring and embedded prompt contract")
+
+
+def validate_herdr_canvas_contract() -> None:
+    skill = read("skills/herdr-canvas/SKILL.md").lower()
+    activation = read(
+        "skills/herdr-canvas/integrations/copilot/activation.md"
+    ).lower()
+    scenarios = {
+        "activation": (
+            "activate only",
+            "canvas on",
+            "do not infer activation",
+            "task size",
+            "current task",
+            "canvas off",
+            "no canvas",
+        ),
+        "rich layout": (
+            "for every explicitly activated task",
+            "canvas.set_layout",
+            "packaged layout before substantive work",
+            "before substantive work",
+            "documented fallback",
+        ),
+        "state": (
+            "canvas.set_data",
+            "replaces the complete named dataset",
+            "include every field",
+            "at most eight events",
+            "stable ids",
+        ),
+        "decisions": (
+            "2-12 option",
+            "wait for",
+            "free-text questions in chat",
+            "not an answer",
+        ),
+        "lifecycle": (
+            "canvas.complete",
+            "canvas.close",
+            "manually closed pane",
+            "sandbox_unavailable",
+            "continue the underlying task in chat",
+        ),
+        "isolation": (
+            "never weaken worker isolation",
+            "unsandboxed fallback",
+            "do not promise persistence after the host exits",
+        ),
+        "chart correctness": (
+            "chart-correctness gate",
+            "measure",
+            "category labels",
+            "units",
+            "population or denominator",
+            "actual rendered output",
+            "tested labelled fallback",
+            "every distinct chart form",
+            "retain chart metadata",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(
+            not missing,
+            f"herdr-canvas {scenario} contract missing: {', '.join(missing)}",
+        )
+        print(f"ok: herdr-canvas {scenario} contract")
+    for forbidden in (
+        "activate for multi-step planning",
+        "eligible for automatic activation",
+    ):
+        require(
+            forbidden not in skill,
+            f"herdr-canvas must remain opt-in only: {forbidden}",
+        )
+    for required in (
+        "canvas on",
+        "never open a canvas because",
+        "scope activation to the current task",
+    ):
+        require(
+            required in activation,
+            f"herdr-canvas Copilot opt-in contract missing: {required}",
+        )
+    charts = read("skills/herdr-canvas/references/charts.md").lower()
+    for required in (
+        "row numbers are not category labels",
+        "proportion percentages use `0` to `100%`",
+        "percentage changes can be negative or exceed `100%`",
+        "do not silently omit categories",
+        "number.tolocalestring",
+        "herdr pane read",
+        "successful `canvas.set_layout` response is not a visual acceptance check",
+    ):
+        require(
+            required in charts,
+            f"herdr-canvas chart reference missing: {required}",
+        )
+    for resource in (
+        "skills/herdr-canvas/layouts/labelled-bars.mdx",
+        "skills/herdr-canvas/fixtures/chart-correctness.json",
+    ):
+        require(Path(resource).is_file(), f"herdr-canvas chart resource missing: {resource}")
+    print("ok: herdr-canvas chart resources contract")
+    print("ok: herdr-canvas opt-in contract")
 
 
 def validate_trellage_guide_contract() -> None:
@@ -705,6 +813,7 @@ def validate_repository_support() -> None:
         "README must document the runwisp-job-authoring skill",
     )
     require("goal-me" in readme, "README must document the goal-me skill")
+    require("`herdr-canvas`" in readme, "README must document herdr-canvas")
     require("`finish`" in readme, "README must document the finish skill")
     require("`audit-ro`" in readme, "README must document the audit-ro skill")
     require("`clean-tests`" in readme, "README must document the clean-tests skill")
@@ -736,6 +845,49 @@ def validate_repository_support() -> None:
     require(
         "cp -R skills/goal-me/. dist/staging/goal-me/" in workflow,
         "release workflow must package skills/goal-me as goal-me",
+    )
+    require(
+        "cp -R skills/herdr-canvas/. dist/staging/herdr-canvas/" in workflow,
+        "release workflow must package herdr-canvas independently",
+    )
+    require(
+        "herdr-canvas-integration" in workflow,
+        "release workflow must package the canvas application with its skill",
+    )
+    require(
+        "README.md LICENSE .mise.toml" in workflow,
+        "release workflow must include the all-host mise task",
+    )
+    require(
+        "bun run runtime:package" in workflow,
+        "release workflow must prepare the isolated canvas runtime",
+    )
+    require(
+        "bun scripts/probe-sandbox.ts" in workflow
+        and '"status":"sandbox_ready"' in workflow,
+        "release workflow must probe the prepared sandbox runtime",
+    )
+    require(
+        "chmod -R u+w dist/staging" in workflow,
+        "release workflow must make immutable runtime staging writable before cleanup",
+    )
+    require(
+        "e1f84a33bdfecad82490285ea65058fdabe2028a" in workflow,
+        "release workflow must build the reviewed Nono revision",
+    )
+    mise = read(".mise.toml")
+    require(
+        "[tasks.herdr-canvas]" in mise,
+        "mise must expose one Herdr Canvas install and upgrade task",
+    )
+    require(
+        "--hosts copilot,claude,codex,pi" in mise,
+        "mise Herdr Canvas task must install every supported harness",
+    )
+    require(
+        "bun run runtime:package" in mise
+        and mise.index("bun run runtime:package") < mise.index("bun run verify"),
+        "mise Herdr Canvas task must refresh the worker runtime before verification",
     )
     require(
         "cp -R skills/finish/. dist/staging/finish/" in workflow,
@@ -803,6 +955,7 @@ def main() -> int:
         validate_behavior_contract,
         validate_runwisp_job_authoring_contract,
         validate_goal_me_contract,
+        validate_herdr_canvas_contract,
         validate_trellage_guide_contract,
         validate_finish_contract,
         validate_audit_ro_contract,

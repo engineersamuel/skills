@@ -1,0 +1,38 @@
+{
+  "name": "herdr-terminal-canvas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "bun": "1.4.2"
+  },
+  "scripts": {
+    "build": "bun build ./src/broker/main.ts ./src/renderer/main.tsx ./src/worker/main.ts ./scripts/probe-sandbox.ts --outdir ./dist --target bun --external react-devtools-core",
+    "install:copilot": "bun scripts/install.ts --scope user",
+    "install:all": "bun scripts/install.ts --scope user --hosts copilot,claude,codex,pi",
+    "runtime:package": "bun scripts/package-runtime.ts",
+    "showcase": "bun scripts/live-canvas-showcase.ts",
+    "test:live": "bun scripts/live-herdr-integration.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "verify": "bun run typecheck && bun test"
+  },
+  "dependencies": {
+    "@effect/platform-bun": "4.0.0-rc.117",
+    "@mdx-js/mdx": "3.1.1",
+    "@modelcontextprotocol/sdk": "1.30.1",
+    "effect": "4.0.0-rc.117",
+    "ink": "6.8.0",
+    "react": "19.2.8",
+    "react-reconciler": "0.33.0",
+    "remark-gfm": "4.0.1",
+    "string-width": "7.2.0",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.2",
+    "@types/react": "19.2.18",
+    "@types/react-reconciler": "0.33.0",
+    "typescript": "5.9.3"
+  }
+}

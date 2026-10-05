@@ -9,6 +9,7 @@ job-package authoring.
 - `finish` commits all current worktree changes after stopping for user review of questionable or ignore-worthy files, rebases on `origin/main`, creates a PR, enables squash auto-merge, and monitors it until merged.
 - `justify` audits claims, recommendations, plans, and decisions against evidence and dissent.
 - `goal-me` steers a free-form request into a filled goal-loop prompt and writes it to `GOAL.md`.
+- `herdr-canvas` maintains an explicitly requested live Herdr terminal canvas.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
 - `trellage-guide` matches an intent to Trellage profiles and workflows, generates prompt choices, and prepares confirmed terminal or Herdr handoff.
 - `ui-guidelines` applies practical visual, motion, typography, color, accessibility, layout, and writing rules to UI, frontend, HTML, and CSS work.
@@ -41,6 +42,7 @@ Use $audit-ro to audit this codebase for material simplifications without changi
 Use $clean-tests to remove low-value tests and retain stable repository-owned contracts.
 Use $justify to audit the recommendation above.
 Use $goal-me to turn this request into a GOAL.md.
+Canvas on. Use $herdr-canvas to maintain a live Herdr canvas for this task.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 Use $finish to commit this work and monitor its PR until merged.
 Use $trellage-guide to choose a Trellage profile and generate prompt choices.
@@ -121,6 +123,7 @@ npx skills add engineersamuel/skills --skill audit-ro --agent claude-code
 npx skills add engineersamuel/skills --skill clean-tests --agent claude-code
 npx skills add engineersamuel/skills --skill justify --agent claude-code
 npx skills add engineersamuel/skills --skill goal-me --agent claude-code
+npx skills add engineersamuel/skills --skill herdr-canvas --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 npx skills add engineersamuel/skills --skill finish --agent claude-code
 npx skills add engineersamuel/skills --skill trellage-guide --agent claude-code
@@ -134,6 +137,7 @@ npx skills add engineersamuel/skills --skill audit-ro --agent codex
 npx skills add engineersamuel/skills --skill clean-tests --agent codex
 npx skills add engineersamuel/skills --skill justify --agent codex
 npx skills add engineersamuel/skills --skill goal-me --agent codex
+npx skills add engineersamuel/skills --skill herdr-canvas --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 npx skills add engineersamuel/skills --skill finish --agent codex
 npx skills add engineersamuel/skills --skill trellage-guide --agent codex
@@ -185,6 +189,17 @@ simulating provider compatibility.
 `runwisp-job-authoring` needs access to the target repository and current Jobkit documentation. Running `doctor` or a safe dry run also requires an installed `runwisp-job` command and the package's declared runtime inputs.
 
 `goal-me` needs write access to the current working directory. It uses an installed `grill-me` skill when one is present.
+
+`herdr-canvas` requires Herdr, macOS, and the separately installed canvas MCP
+application. The portable skill does not weaken MCP permissions or sandbox
+enforcement. Install the application and persistent Copilot activation from
+[`tools/canvas`](tools/canvas/README.md).
+
+Install or upgrade Herdr Canvas for Copilot CLI, Claude Code, Codex, and Pi:
+
+```sh
+mise run herdr-canvas
+```
 
 `trellage-guide` requires a current Trellage installation whose `trx guide`
 help reports the schema version 1 JSON API. Model authentication and profile

@@ -44,14 +44,106 @@ jobs:
             exit 1
           fi
 
+  validate-canvas:
+    runs-on: macos-15
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Install pinned Bun
+        run: npm install --global bun@1.4.2
+
+      - name: Build reviewed Nono
+        shell: bash
+        run: |
+          git init "${RUNNER_TEMP}/nono"
+          git -C "${RUNNER_TEMP}/nono" remote add origin \
+            https://github.com/nolabs-ai/nono.git
+          git -C "${RUNNER_TEMP}/nono" fetch --depth 1 origin \
+            e1f84a33bdfecad82490285ea65058fdabe2028a
+          git -C "${RUNNER_TEMP}/nono" checkout --detach FETCH_HEAD
+          cargo build --release -p nono-cli --bin nono \
+            --manifest-path "${RUNNER_TEMP}/nono/Cargo.toml"
+          mkdir -p "${HOME}/.local/bin"
+          install -m 0555 \
+            "${RUNNER_TEMP}/nono/target/release/nono" \
+            "${HOME}/.local/bin/nono"
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Install canvas dependencies
+        working-directory: tools/canvas
+        run: bun install --frozen-lockfile
+
+      - name: Pin reviewed Nono
+        working-directory: tools/canvas
+        run: |
+          bun scripts/pin-nono.ts \
+            "${RUNNER_TEMP}/nono" \
+            "${HOME}/.local/bin/nono"
+
+      - name: Prepare sandbox runtime
+        working-directory: tools/canvas
+        run: bun run runtime:package
+
+      - name: Probe prepared sandbox runtime
+        working-directory: tools/canvas
+        shell: bash
+        run: |
+          runtime="${PWD}/generated/runtime-darwin-arm64"
+          report="$(
+            CANVAS_NONO_BIN="${runtime}/nono" \
+            CANVAS_BUN_BIN="${runtime}/bun" \
+            CANVAS_RUNTIME_ROOT="${runtime}" \
+            bun scripts/probe-sandbox.ts
+          )"
+          printf '%s\n' "${report}"
+          grep -q '"status":"sandbox_ready"' <<<"${report}"
+
+      - name: Verify canvas
+        working-directory: tools/canvas
+        run: bun run verify
+
   release:
-    needs: validate
-    runs-on: ubuntu-latest
+    needs: [validate, validate-canvas]
+    runs-on: macos-15
+    timeout-minutes: 45
     permissions:
       contents: write
     steps:
       - name: Check out repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Install pinned Bun
+        run: npm install --global bun@1.4.2
+
+      - name: Build reviewed Nono
+        shell: bash
+        run: |
+          git init "${RUNNER_TEMP}/nono"
+          git -C "${RUNNER_TEMP}/nono" remote add origin \
+            https://github.com/nolabs-ai/nono.git
+          git -C "${RUNNER_TEMP}/nono" fetch --depth 1 origin \
+            e1f84a33bdfecad82490285ea65058fdabe2028a
+          git -C "${RUNNER_TEMP}/nono" checkout --detach FETCH_HEAD
+          cargo build --release -p nono-cli --bin nono \
+            --manifest-path "${RUNNER_TEMP}/nono/Cargo.toml"
+          mkdir -p "${HOME}/.local/bin"
+          install -m 0555 \
+            "${RUNNER_TEMP}/nono/target/release/nono" \
+            "${HOME}/.local/bin/nono"
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Prepare canvas release runtime
+        working-directory: tools/canvas
+        run: |
+          bun install --frozen-lockfile
+          bun scripts/pin-nono.ts \
+            "${RUNNER_TEMP}/nono" \
+            "${HOME}/.local/bin/nono"
+          bun run runtime:package
 
       - name: Package skills
         shell: bash
@@ -77,6 +169,33 @@ jobs:
           cp README.md LICENSE dist/staging/goal-me/
           tar -C dist/staging -czf "dist/goal-me-${GITHUB_REF_NAME}.tar.gz" goal-me
           (cd dist/staging && zip -qr "../goal-me-${GITHUB_REF_NAME}.zip" goal-me)
+
+          mkdir -p dist/staging/herdr-canvas
+          cp -R skills/herdr-canvas/. dist/staging/herdr-canvas/
+          cp README.md LICENSE dist/staging/herdr-canvas/
+          tar -C dist/staging -czf \
+            "dist/herdr-canvas-${GITHUB_REF_NAME}.tar.gz" \
+            herdr-canvas
+          (cd dist/staging && zip -qr \
+            "../herdr-canvas-${GITHUB_REF_NAME}.zip" \
+            herdr-canvas)
+
+          mkdir -p dist/staging/herdr-canvas-integration/tools
+          mkdir -p dist/staging/herdr-canvas-integration/skills
+          cp -R tools/canvas dist/staging/herdr-canvas-integration/tools/
+          cp -R skills/herdr-canvas \
+            dist/staging/herdr-canvas-integration/skills/
+          rm -rf \
+            dist/staging/herdr-canvas-integration/tools/canvas/node_modules \
+            dist/staging/herdr-canvas-integration/tools/canvas/.canvas \
+            dist/staging/herdr-canvas-integration/tools/canvas/dist
+          cp README.md LICENSE .mise.toml dist/staging/herdr-canvas-integration/
+          tar -C dist/staging -czf \
+            "dist/herdr-canvas-integration-${GITHUB_REF_NAME}.tar.gz" \
+            herdr-canvas-integration
+          (cd dist/staging && zip -qr \
+            "../herdr-canvas-integration-${GITHUB_REF_NAME}.zip" \
+            herdr-canvas-integration)
 
           mkdir -p dist/staging/finish
           cp -R skills/finish/. dist/staging/finish/
@@ -120,14 +239,19 @@ jobs:
             "../trellage-guide-${GITHUB_REF_NAME}.zip" \
             trellage-guide)
 
+          chmod -R u+w dist/staging
           rm -rf dist/staging
-          (cd dist && sha256sum \
+          (cd dist && shasum -a 256 \
             justify-"${GITHUB_REF_NAME}".tar.gz \
             justify-"${GITHUB_REF_NAME}".zip \
             runwisp-job-authoring-"${GITHUB_REF_NAME}".tar.gz \
             runwisp-job-authoring-"${GITHUB_REF_NAME}".zip \
             goal-me-"${GITHUB_REF_NAME}".tar.gz \
             goal-me-"${GITHUB_REF_NAME}".zip \
+            herdr-canvas-"${GITHUB_REF_NAME}".tar.gz \
+            herdr-canvas-"${GITHUB_REF_NAME}".zip \
+            herdr-canvas-integration-"${GITHUB_REF_NAME}".tar.gz \
+            herdr-canvas-integration-"${GITHUB_REF_NAME}".zip \
             finish-"${GITHUB_REF_NAME}".tar.gz \
             finish-"${GITHUB_REF_NAME}".zip \
             audit-ro-"${GITHUB_REF_NAME}".tar.gz \
@@ -151,6 +275,10 @@ jobs:
             dist/runwisp-job-authoring-"${GITHUB_REF_NAME}".zip \
             dist/goal-me-"${GITHUB_REF_NAME}".tar.gz \
             dist/goal-me-"${GITHUB_REF_NAME}".zip \
+            dist/herdr-canvas-"${GITHUB_REF_NAME}".tar.gz \
+            dist/herdr-canvas-"${GITHUB_REF_NAME}".zip \
+            dist/herdr-canvas-integration-"${GITHUB_REF_NAME}".tar.gz \
+            dist/herdr-canvas-integration-"${GITHUB_REF_NAME}".zip \
             dist/finish-"${GITHUB_REF_NAME}".tar.gz \
             dist/finish-"${GITHUB_REF_NAME}".zip \
             dist/audit-ro-"${GITHUB_REF_NAME}".tar.gz \

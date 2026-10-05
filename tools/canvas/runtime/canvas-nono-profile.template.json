@@ -1,0 +1,66 @@
+{
+  "meta": { "name": "default" },
+  "groups": {
+    "include": [
+      "deny_credentials",
+      "deny_keychains_macos",
+      "deny_browser_data_macos",
+      "deny_macos_private",
+      "deny_shell_configs",
+      "deny_shell_history"
+    ],
+    "exclude": []
+  },
+  "workdir": { "access": "none" },
+  "filesystem": {
+    "read": [
+      "__CANVAS_RUNTIME_BUNDLE__",
+      "__CANVAS_SCRATCH_DIRECTORY__",
+      "/usr/lib",
+      "/System/Library",
+      "/private/var/db/dyld",
+      "/dev/null",
+      "/dev/urandom",
+      "/dev/random"
+    ],
+    "deny": [
+      "__CANVAS_PROFILE_DIRECTORY__",
+      "/dev/tty*",
+      "/dev/ptmx",
+      "/dev/console",
+      "/dev/pts",
+      "/dev/pts/*"
+    ]
+  },
+  "network": { "block": true },
+  "environment": {
+    "allow_vars": [],
+    "set_vars": {
+      "HOME": "__CANVAS_SCRATCH_DIRECTORY__",
+      "TMPDIR": "__CANVAS_SCRATCH_DIRECTORY__"
+    }
+  },
+  "security": {
+    "signal_mode": "isolated",
+    "process_info_mode": "isolated",
+    "ipc_mode": "shared_memory_only",
+    "capability_elevation": false
+  },
+  "unsafe_macos_seatbelt_rules": [
+    "(deny process-fork)",
+    "(deny process-exec*)",
+    "__CANVAS_ALLOW_BUN_EXEC__",
+    "(deny mach-lookup)",
+    "(deny mach-per-user-lookup)",
+    "(deny mach-task-name)",
+    "(deny ipc-posix-shm-read-data)",
+    "(deny ipc-posix-shm-write-data)",
+    "(deny ipc-posix-shm-write-create)",
+    "(deny ipc-posix-sem*)",
+    "(deny file-read* (regex #\"^/dev/(tty.*|console|pts(/.*)?)$\"))",
+    "(deny file-write* (regex #\"^/dev/(tty.*|console|pts(/.*)?)$\"))",
+    "(deny file-ioctl (regex #\"^/dev/(tty.*|console|pts(/.*)?)$\"))",
+    "(deny pseudo-tty)",
+    "(deny network*)"
+  ]
+}
