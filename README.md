@@ -2,7 +2,8 @@
 
 Portable skills for repository delivery, evidence audits, test-suite cleanup,
 interface quality, goal-loop prompts, Trellage profile routing, and RunWisp
-job-package authoring.
+job-package authoring. `mastermind` coordinates explicitly requested, bounded,
+cross-harness work through installed Trx and Herdr capabilities.
 
 - `audit-ro` coordinates a complete, read-only codebase audit for materially useful simplifications.
 - `clean-tests` removes low-value tests while retaining stable, repository-owned behavioral contracts.
@@ -12,6 +13,7 @@ job-package authoring.
 - `herdr-canvas` maintains an explicitly requested live Herdr terminal canvas.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
 - `trellage-guide` matches an intent to Trellage profiles and workflows, generates prompt choices, and prepares confirmed terminal or Herdr handoff.
+- `mastermind` coordinates one-writer implementation and independent, evidence-based reviews across available harnesses.
 - `ui-guidelines` applies practical visual, motion, typography, color, accessibility, layout, and writing rules to UI, frontend, HTML, and CSS work.
 
 This repository also ships repository tooling, not a skill: a user-level complexity gate that runs
@@ -46,6 +48,7 @@ Canvas on. Use $herdr-canvas to maintain a live Herdr canvas for this task.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 Use $finish to commit this work and monitor its PR until merged.
 Use $trellage-guide to choose a Trellage profile and generate prompt choices.
+Use $mastermind to coordinate this explicitly requested work across available harnesses.
 Use $ui-guidelines to improve this UI or HTML.
 ```
 
@@ -127,6 +130,7 @@ npx skills add engineersamuel/skills --skill herdr-canvas --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 npx skills add engineersamuel/skills --skill finish --agent claude-code
 npx skills add engineersamuel/skills --skill trellage-guide --agent claude-code
+npx skills add engineersamuel/skills --skill mastermind --agent claude-code
 npx skills add engineersamuel/skills --skill ui-guidelines --agent claude-code
 ```
 
@@ -141,6 +145,7 @@ npx skills add engineersamuel/skills --skill herdr-canvas --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 npx skills add engineersamuel/skills --skill finish --agent codex
 npx skills add engineersamuel/skills --skill trellage-guide --agent codex
+npx skills add engineersamuel/skills --skill mastermind --agent codex
 npx skills add engineersamuel/skills --skill ui-guidelines --agent codex
 ```
 
@@ -204,6 +209,56 @@ mise run herdr-canvas
 `trellage-guide` requires a current Trellage installation whose `trx guide`
 help reports the schema version 1 JSON API. Model authentication and profile
 readiness remain owned by Trellage.
+
+`mastermind` requires installed Trx and Herdr versions with the needed local
+capabilities. It checks the available launchers and profiles before use, and
+stops instead of assuming features that are still in development. Review
+launches require explicit scope approval and use a frozen worktree snapshot.
+Install compatible Trx support before installing or publishing this skill.
+Confirm that `trx --help` lists `trx mastermind --json`; then use the
+capabilities request in `skills/mastermind/references/fleet-protocol.md`. Older Trx
+versions without this command cannot run this protocol. The skill uses only
+local Trx and Herdr control commands, not a provider-specific agent API.
+
+### Retest local Mastermind skill changes in Copilot
+
+Prepare the Trellage source runtime and install its router from the Trellage
+checkout first:
+
+```fish
+scripts/install-source-runtime.sh --prepare
+prototypes/trellage-router/install.sh
+trx mastermind --help
+```
+
+Help must list `schema` and `run.attach`. Then, from the same worktree where
+you will run Copilot, install the skill from the absolute path of the updated
+skills checkout:
+
+```fish
+npx skills add /absolute/path/to/skills-checkout --skill mastermind --agent github-copilot -y
+npx skills remove trx --agent github-copilot -y
+```
+
+This selects local unpublished changes. Installing `engineersamuel/skills`
+or running `trx skills update` fetches the remote source, not uncommitted
+changes in your local checkout. Do not expect either to install a local
+candidate.
+The portable skill is now `mastermind`; the CLI remains `trx`. Remove an
+older global `trx` skill separately with `npx skills remove trx -g -y` if
+`npx skills list -g` reports one. Do not remove other installed skills.
+
+Start a fresh `trx run copilot PROFILE` session inside Herdr. Use `/skills`
+and `/env` to check that `mastermind` is enabled and inspect its source. If another
+copy wins discovery, replace or disable that copy explicitly; do not assume
+the installer path is the path Copilot loaded. Check `SKILL.md` and both
+reference files against the source checkout. The new copy must describe
+`run.attach`, filtered capability discovery, one absolute deadline, and a
+single approval pause. A fresh session avoids old skill text already present
+in conversation history.
+
+For a trial that waits for human approval, keep Copilot in interactive mode.
+Automatic continuation messages never count as approval.
 
 ## Validate
 

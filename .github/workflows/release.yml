@@ -239,6 +239,16 @@ jobs:
             "../trellage-guide-${GITHUB_REF_NAME}.zip" \
             trellage-guide)
 
+          mkdir -p dist/staging/mastermind
+          cp -R skills/mastermind/. dist/staging/mastermind/
+          cp README.md LICENSE dist/staging/mastermind/
+          tar -C dist/staging -czf \
+            "dist/mastermind-${GITHUB_REF_NAME}.tar.gz" \
+            mastermind
+          (cd dist/staging && zip -qr \
+            "../mastermind-${GITHUB_REF_NAME}.zip" \
+            mastermind)
+
           chmod -R u+w dist/staging
           rm -rf dist/staging
           (cd dist && shasum -a 256 \
@@ -262,6 +272,8 @@ jobs:
             ui-guidelines-"${GITHUB_REF_NAME}".zip \
             trellage-guide-"${GITHUB_REF_NAME}".tar.gz \
             trellage-guide-"${GITHUB_REF_NAME}".zip \
+            mastermind-"${GITHUB_REF_NAME}".tar.gz \
+            mastermind-"${GITHUB_REF_NAME}".zip \
             > SHA256SUMS)
 
       - name: Create GitHub release
@@ -289,6 +301,8 @@ jobs:
             dist/ui-guidelines-"${GITHUB_REF_NAME}".zip \
             dist/trellage-guide-"${GITHUB_REF_NAME}".tar.gz \
             dist/trellage-guide-"${GITHUB_REF_NAME}".zip \
+            dist/mastermind-"${GITHUB_REF_NAME}".tar.gz \
+            dist/mastermind-"${GITHUB_REF_NAME}".zip \
             dist/SHA256SUMS \
             --generate-notes \
             --title "Agent Skills ${GITHUB_REF_NAME}" \
