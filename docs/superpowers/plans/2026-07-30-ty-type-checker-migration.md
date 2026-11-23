@@ -24,6 +24,7 @@ The affected files are part of the existing uncommitted harness batch. Do not cr
 ### Task 1: Add the type-checker migration regression test
 
 **Files:**
+
 - Create: `tests/test_tooling.py`
 
 - [ ] **Step 1: Write the failing test**
@@ -73,6 +74,7 @@ Expected: FAIL at `assert not (ROOT / "mypy.ini").exists()` because the Mypy con
 ### Task 2: Replace Mypy configuration and automation with ty
 
 **Files:**
+
 - Delete: `mypy.ini`
 - Modify: `requirements.txt`
 - Modify: `pyproject.toml`
@@ -171,6 +173,7 @@ Expected: `All checks passed!` with exit code 0.
 ### Task 3: Verify the complete harness batch
 
 **Files:**
+
 - Verify only; do not modify files unless a check exposes a migration regression.
 
 - [ ] **Step 1: Install the pinned tools in an isolated environment**

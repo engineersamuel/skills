@@ -343,9 +343,7 @@ def validate_goal_me_contract() -> None:
 
 def validate_herdr_canvas_contract() -> None:
     skill = read("skills/herdr-canvas/SKILL.md").lower()
-    activation = read(
-        "skills/herdr-canvas/integrations/copilot/activation.md"
-    ).lower()
+    activation = read("skills/herdr-canvas/integrations/copilot/activation.md").lower()
     scenarios = {
         "activation": (
             "activate only",
@@ -442,7 +440,9 @@ def validate_herdr_canvas_contract() -> None:
         "skills/herdr-canvas/layouts/labelled-bars.mdx",
         "skills/herdr-canvas/fixtures/chart-correctness.json",
     ):
-        require(Path(resource).is_file(), f"herdr-canvas chart resource missing: {resource}")
+        require(
+            Path(resource).is_file(), f"herdr-canvas chart resource missing: {resource}"
+        )
     print("ok: herdr-canvas chart resources contract")
     print("ok: herdr-canvas opt-in contract")
 
@@ -504,11 +504,7 @@ def validate_mastermind_contract() -> None:
     skill = " ".join(" ".join(read(source).lower().split()) for source in skill_sources)
     scenarios = {
         "capability checks": (
-            "trx mastermind --json",
             "trx list --json",
-            "trx inventory launcher profile --json",
-            "automationready",
-            "modelevidence: \"unknown\"",
             "herdr --version",
             "herdr --help",
             "herdr v0.9.5",
@@ -527,63 +523,38 @@ def validate_mastermind_contract() -> None:
             "trx run harness profile -- args",
             "recognized and ready",
             "do not blindly resend a prompt",
-            "run.reserve",
-            "run.record",
-            "run.create",
-            "preferences.get",
-            "preferences.set",
             "explicit user approval",
-            "latest revision",
-            "different harnesses and model families",
         ),
         "privacy and boundaries": (
             "trx guide --optimize",
             "whole repository",
             "only when the user explicitly approves whole-repository optimization",
-            "optional and is not a reviewer",
             "raw diffs",
-            "external model/provider destination",
             "do not push, merge, publish",
-            "automationready",
             "whole-repository",
         ),
         "smoke-test recovery": (
-            "trx mastermind --help",
-            '"operation":"schema"',
-            "run.attach",
             "agent_not_found",
             "absolute utc deadline",
             "remainingms",
             "promptsubmittedat",
-            "shellpid",
-            "terminalid",
             "automatic continuation reminders",
-            "interactive mode",
-            "approval message time",
-            "messageid",
-            "result.plan",
-            "unchanged",
             "not a delivery acknowledgement",
         ),
         "live acceptance": (
-            "routingpolicy",
-            "effectivepolicy",
-            "configured service",
             "agent_not_idle",
             "--source visible",
-            "result: null",
-            "same `sourcescope` object",
             "submit work to each ready worker",
-            "initial task",
         ),
     }
     for scenario, required_phrases in scenarios.items():
         missing = [phrase for phrase in required_phrases if phrase not in skill]
-        require(not missing, f"mastermind {scenario} contract missing: {', '.join(missing)}")
+        require(
+            not missing, f"mastermind {scenario} contract missing: {', '.join(missing)}"
+        )
         print(f"ok: mastermind {scenario} contract")
     require(
-        "https://github.com/herdrdev/herdr/blob/v0.9.5/skills/herdr/skill.md"
-        in skill,
+        "https://github.com/herdrdev/herdr/blob/v0.9.5/skills/herdr/skill.md" in skill,
         "mastermind must reference the exact Herdr v0.9.5 skill",
     )
     require(

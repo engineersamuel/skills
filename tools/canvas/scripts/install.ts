@@ -485,7 +485,7 @@ const copySkill = (
 
 const launcherText = (applicationDirectory: string): string => `#!/bin/bash
 set -euo pipefail
-readonly app=${JSON.stringify(applicationDirectory)}
+readonly app='${applicationDirectory.replaceAll("'", "'\\''")}'
 export CANVAS_RUNTIME_BUNDLE="$app/runtime"
 exec "$app/runtime/bun" "$app/src/broker/main.ts" "$@"
 `;

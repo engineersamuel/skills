@@ -1,0 +1,37 @@
+amends "package://github.com/jdx/hk/releases/download/v1.58.1/hk@1.58.1#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.58.1/hk@1.58.1#/Builtins.pkl"
+
+local allSteps = new Mapping<String, Step> {
+  ["prettier"] = (Builtins.prettier) {
+    glob = List("**/*.md")
+  }
+  ["markdownlint"] = new Step {
+    glob = List("**/*.md")
+    check = "markdownlint-cli2 {{files}}"
+    fix = "markdownlint-cli2 --fix {{files}}"
+  }
+  ["ruff-format"] = new Step {
+    glob = List("**/*.py")
+    check = "uv run ruff format --check {{files}}"
+    fix = "uv run ruff format {{files}}"
+  }
+  ["ruff-check"] = new Step {
+    glob = List("**/*.py")
+    check = "uv run ruff check {{files}}"
+    fix = "uv run ruff check --fix {{files}}"
+  }
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "patch-file"
+    steps = allSteps
+  }
+  ["fix"] {
+    steps = allSteps
+  }
+  ["check"] {
+    steps = allSteps
+  }
+}

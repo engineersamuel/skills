@@ -1,7 +1,6 @@
 # Automatic Canvas Implementation Plan
 
-> **Superseded:** This historical plan describes automatic activation. The
-> shipped integration is explicit opt-in only. Use `canvas on` to activate it.
+> **Superseded:** This historical plan describes automatic activation. The shipped integration is explicit opt-in only. Use `canvas on` to activate it.
 
 > **For agentic workers:** Use `superpowers:executing-plans` to implement this plan task by task. Steps use checkboxes for tracking. No parallel agents are required.
 

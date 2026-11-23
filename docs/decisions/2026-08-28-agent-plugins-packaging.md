@@ -6,26 +6,19 @@
 
 ## Context
 
-This repository can be packaged as an Agent Plugins 1.0 plugin, allowing users
-to install all owned skills as one managed package. The existing
-`npx skills add` flow already supports selecting and installing individual
-skills.
+This repository can be packaged as an Agent Plugins 1.0 plugin, allowing users to install all owned skills as one managed package. The existing `npx skills add` flow already supports selecting and installing individual skills.
 
 ## Current decision
 
-Do not publish Agent Plugins packaging for this repository now. Continue to
-support individual skill installation through `npx skills add`.
+Do not publish Agent Plugins packaging for this repository now. Continue to support individual skill installation through `npx skills add`.
 
 ## Reasons
 
-- Plugin packaging changes installation and package management, not skill
-  behavior.
+- Plugin packaging changes installation and package management, not skill behavior.
 - Current users can already select only the skills they need.
-- Copilot warns that direct repository plugin installs will later require a
-  marketplace.
+- Copilot warns that direct repository plugin installs will later require a marketplace.
 - Codex already requires a marketplace.
-- The manifest has negligible runtime cost, but client testing and marketplace
-  maintenance do not yet have clear user value.
+- The manifest has negligible runtime cost, but client testing and marketplace maintenance do not yet have clear user value.
 
 ## Reevaluate when
 
