@@ -1,12 +1,25 @@
 [tools]
 bun = "1.4.2"
+hk = "1.58.1"
+"npm:markdownlint-cli2" = "0.23.3"
+"npm:prettier" = "3.9.10"
+pkl = "0.32.1"
+
+[tasks.trx]
+description = "Run the installed Trellage CLI"
+raw = true
+raw_args = true
+run = "exec trx"
 
 [tasks.herdr-canvas]
 description = "Install or upgrade Herdr Canvas for Copilot, Claude Code, Codex, and Pi"
 run = """
 cd tools/canvas
 bun install --frozen-lockfile
-bun run runtime:package
+bun run runtime:package || {
+  printf '%s\\n' 'Runtime packaging failed. For pinned Nono build and artifact setup, follow tools/canvas/README.md from the repository root.' >&2
+  exit 1
+}
 bun run verify
 bun scripts/install.ts \
   --scope user \

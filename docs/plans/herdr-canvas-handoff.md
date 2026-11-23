@@ -1,9 +1,6 @@
 # Herdr canvas: Copilot implementation handoff
 
-> **Latest user override (2026-10-05):** Herdr Canvas is opt-in only. Never
-> activate it from task size, complexity, or MCP availability. The preferred
-> explicit trigger is `canvas on`. This override supersedes automatic
-> activation requirements elsewhere in this handoff and in the copied plan.
+> **Latest user override (2026-10-05):** Herdr Canvas is opt-in only. Never activate it from task size, complexity, or MCP availability. The preferred explicit trigger is `canvas on`. This override supersedes automatic activation requirements elsewhere in this handoff and in the copied plan.
 
 ## Authorization and objective
 

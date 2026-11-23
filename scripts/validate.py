@@ -44,6 +44,7 @@ def validate_metadata() -> None:
         "justify": "Justify",
         "runwisp-job-authoring": "RunWisp Job Authoring",
         "trellage-guide": "Trellage Guide",
+        "mastermind": "Mastermind",
         "ui-guidelines": "UI Guidelines",
     }
     for name, display_name in skills.items():
@@ -116,6 +117,7 @@ def validate_discovery() -> None:
             "skills/grilling-frontend-prototyping/SKILL.md",
             "skills/herdr-canvas/SKILL.md",
             "skills/justify/SKILL.md",
+            "skills/mastermind/SKILL.md",
             "skills/runwisp-job-authoring/SKILL.md",
             "skills/trellage-guide/SKILL.md",
             "skills/ui-guidelines/SKILL.md",
@@ -341,9 +343,7 @@ def validate_goal_me_contract() -> None:
 
 def validate_herdr_canvas_contract() -> None:
     skill = read("skills/herdr-canvas/SKILL.md").lower()
-    activation = read(
-        "skills/herdr-canvas/integrations/copilot/activation.md"
-    ).lower()
+    activation = read("skills/herdr-canvas/integrations/copilot/activation.md").lower()
     scenarios = {
         "activation": (
             "activate only",
@@ -440,7 +440,9 @@ def validate_herdr_canvas_contract() -> None:
         "skills/herdr-canvas/layouts/labelled-bars.mdx",
         "skills/herdr-canvas/fixtures/chart-correctness.json",
     ):
-        require(Path(resource).is_file(), f"herdr-canvas chart resource missing: {resource}")
+        require(
+            Path(resource).is_file(), f"herdr-canvas chart resource missing: {resource}"
+        )
     print("ok: herdr-canvas chart resources contract")
     print("ok: herdr-canvas opt-in contract")
 
@@ -491,6 +493,76 @@ def validate_trellage_guide_contract() -> None:
             f"trellage-guide {scenario} contract missing: {', '.join(missing)}",
         )
         print(f"ok: trellage-guide {scenario} contract")
+
+
+def validate_mastermind_contract() -> None:
+    skill_sources = (
+        "skills/mastermind/SKILL.md",
+        "skills/mastermind/references/herdr.md",
+        "skills/mastermind/references/fleet-protocol.md",
+    )
+    skill = " ".join(" ".join(read(source).lower().split()) for source in skill_sources)
+    scenarios = {
+        "capability checks": (
+            "trx list --json",
+            "herdr --version",
+            "herdr --help",
+            "herdr v0.9.5",
+            "v0.9.0",
+            "stop and report",
+        ),
+        "safe orchestration": (
+            "only work the user explicitly requests",
+            "one writer at a time",
+            "same frozen snapshot",
+            "3 concurrent agent runs",
+            "8 total agent launches",
+            "2 reviewer debate rounds",
+            "2 optimization passes",
+            "do not learn or save hidden user preferences",
+            "trx run harness profile -- args",
+            "recognized and ready",
+            "do not blindly resend a prompt",
+            "explicit user approval",
+        ),
+        "privacy and boundaries": (
+            "trx guide --optimize",
+            "whole repository",
+            "only when the user explicitly approves whole-repository optimization",
+            "raw diffs",
+            "do not push, merge, publish",
+            "whole-repository",
+        ),
+        "smoke-test recovery": (
+            "agent_not_found",
+            "absolute utc deadline",
+            "remainingms",
+            "promptsubmittedat",
+            "automatic continuation reminders",
+            "not a delivery acknowledgement",
+        ),
+        "live acceptance": (
+            "agent_not_idle",
+            "--source visible",
+            "submit work to each ready worker",
+        ),
+    }
+    for scenario, required_phrases in scenarios.items():
+        missing = [phrase for phrase in required_phrases if phrase not in skill]
+        require(
+            not missing, f"mastermind {scenario} contract missing: {', '.join(missing)}"
+        )
+        print(f"ok: mastermind {scenario} contract")
+    require(
+        "https://github.com/herdrdev/herdr/blob/v0.9.5/skills/herdr/skill.md" in skill,
+        "mastermind must reference the exact Herdr v0.9.5 skill",
+    )
+    require(
+        Path("skills/mastermind/references/herdr.md").is_file()
+        and Path("skills/mastermind/references/fleet-protocol.md").is_file(),
+        "mastermind must package its Herdr and fleet protocol references",
+    )
+    print("ok: mastermind upstream reference")
 
 
 def validate_finish_contract() -> None:
@@ -821,6 +893,7 @@ def validate_repository_support() -> None:
         "`trellage-guide`" in readme,
         "README must document the trellage-guide skill",
     )
+    require("`mastermind`" in readme, "README must document the mastermind skill")
     require(
         "`ui-guidelines`" in readme,
         "README must document the ui-guidelines skill",
@@ -918,6 +991,10 @@ def validate_repository_support() -> None:
         "release workflow must package trellage-guide independently",
     )
     require(
+        "cp -R skills/mastermind/. dist/staging/mastermind/" in workflow,
+        "release workflow must package mastermind independently",
+    )
+    require(
         "cp LICENSE dist/staging/ui-guidelines/" in workflow,
         "ui-guidelines release package must include the repository license",
     )
@@ -941,6 +1018,11 @@ def validate_repository_support() -> None:
             workflow.count(asset) >= 2,
             f"release workflow must checksum and publish the trellage-guide {archive}",
         )
+        asset = f'mastermind-"${{GITHUB_REF_NAME}}".{archive}'
+        require(
+            workflow.count(asset) >= 2,
+            f"release workflow must checksum and publish the mastermind {archive}",
+        )
     require(
         "gh release create" in workflow,
         "release workflow must publish a GitHub release",
@@ -957,6 +1039,7 @@ def main() -> int:
         validate_goal_me_contract,
         validate_herdr_canvas_contract,
         validate_trellage_guide_contract,
+        validate_mastermind_contract,
         validate_finish_contract,
         validate_audit_ro_contract,
         validate_clean_tests_contract,

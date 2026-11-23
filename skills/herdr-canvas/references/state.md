@@ -1,8 +1,6 @@
 # Canvas state
 
-The tested layouts read one complete JSON dataset from `data.canvas`.
-Create or replace it with `canvas.set_data` key `canvas`. The `data.` prefix is
-how MDX reads datasets; it is not part of the tool key.
+The tested layouts read one complete JSON dataset from `data.canvas`. Create or replace it with `canvas.set_data` key `canvas`. The `data.` prefix is how MDX reads datasets; it is not part of the tool key.
 
 ## Shared fields
 
@@ -29,8 +27,7 @@ how MDX reads datasets; it is not part of the tool key.
 }
 ```
 
-`phase` is `planning`, `working`, `waiting`, `complete`, or `blocked`. Step
-statuses are `pending`, `running`, `passed`, `failed`, or `blocked`.
+`phase` is `planning`, `working`, `waiting`, `complete`, or `blocked`. Step statuses are `pending`, `running`, `passed`, `failed`, or `blocked`.
 
 Planning can add:
 
@@ -62,13 +59,11 @@ Debugging can add:
 }
 ```
 
-Hypothesis statuses are `untested`, `supported`, or `ruled_out`. Missing
-collections default to empty.
+Hypothesis statuses are `untested`, `supported`, or `ruled_out`. Missing collections default to empty.
 
 ## Complete replacement
 
-Every `canvas.set_data` call replaces all of `data.canvas`. Preserve prior
-fields explicitly:
+Every `canvas.set_data` call replaces all of `data.canvas`. Preserve prior fields explicitly:
 
 ```json
 {
@@ -102,17 +97,10 @@ fields explicitly:
 }
 ```
 
-Keep only the eight newest events. Keep stable step IDs. Do not fabricate an
-observed timestamp.
+Keep only the eight newest events. Keep stable step IDs. Do not fabricate an observed timestamp.
 
-For charts, keep the complete measure definition on every replacement:
-category labels, values, units, population or denominator, scale semantics,
-precision, and display choice. Read [`charts.md`](./charts.md) before publishing
-chart-heavy data.
+For charts, keep the complete measure definition on every replacement: category labels, values, units, population or denominator, scale semantics, precision, and display choice. Read [`charts.md`](./charts.md) before publishing chart-heavy data.
 
 ## Fallback
 
-If a layout resource cannot be read, open the closest built-in template and use
-stable slot IDs with `canvas.upsert`. Read `canvas.catalog` before choosing
-components. Keep the fallback small: one summary, current activity, steps, and
-checks. Continue the task in chat if the MCP or sandbox is unavailable.
+If a layout resource cannot be read, open the closest built-in template and use stable slot IDs with `canvas.upsert`. Read `canvas.catalog` before choosing components. Keep the fallback small: one summary, current activity, steps, and checks. Continue the task in chat if the MCP or sandbox is unavailable.

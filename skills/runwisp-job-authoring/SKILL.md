@@ -23,14 +23,14 @@ Keep these locations distinct:
 
 Jobkit recognizes only seven fields; unknown fields are rejected. Confirm required fields and defaults against the Jobkit source documentation:
 
-| Field | Purpose |
-| --- | --- |
-| `schema` | Supported manifest schema. |
-| `id` | Nonempty diagnostic label, not a registry key. |
-| `kind` | Current execution kind. |
-| `cwd` | Working directory relative to the job directory. |
-| `argv` | Nonempty executable and argument vector. |
-| `required_env` | Names whose values must be present and nonblank. |
+| Field            | Purpose                                             |
+| ---------------- | --------------------------------------------------- |
+| `schema`         | Supported manifest schema.                          |
+| `id`             | Nonempty diagnostic label, not a registry key.      |
+| `kind`           | Current execution kind.                             |
+| `cwd`            | Working directory relative to the job directory.    |
+| `argv`           | Nonempty executable and argument vector.            |
+| `required_env`   | Names whose values must be present and nonblank.    |
 | `required_files` | Relative, readable regular files needed at runtime. |
 
 `cwd` and every `required_files` entry must be relative and resolve inside the job directory. The working directory must be accessible; required files must be readable regular files. Reject absolute paths, parent traversal, and symlink escapes. Put only environment variable names in the manifest. Never expose secret values in manifests, examples, logs, tests, or public files.

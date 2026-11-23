@@ -11,7 +11,10 @@ target-version = "py310"
 line-length = 88
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP"]
+select = ["E", "F", "I", "UP", "Q"]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
 
 [tool.ruff.format]
 quote-style = "double"

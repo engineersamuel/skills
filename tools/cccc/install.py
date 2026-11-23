@@ -15,6 +15,7 @@ import json
 import os
 import platform
 import re
+import shlex
 import shutil
 import stat
 import subprocess
@@ -57,11 +58,11 @@ HERMES_BLOCK = """\
 # cccc complexity gate — added by tools/cccc/install.py
 hooks:
   post_tool_call:
-    - command: "{command}"
+    - command: {command}
       matcher: "{matcher}"
       timeout: 10
   pre_verify:
-    - command: "{command}"
+    - command: {command}
       timeout: 15
 """
 
@@ -194,10 +195,14 @@ def ensure_binary(home: Path) -> tuple[Path, str]:
 # --------------------------------------------------------------------------
 
 
-def install_adapter(home: Path) -> Path:
+def install_adapter(home: Path, binary: Path) -> Path:
     source = Path(__file__).resolve().parent / "hook.py"
     dest = home / ".local" / "share" / "cccc-agent" / "hook.py"
     text = source.read_text(encoding="utf-8")
+    text = text.replace(
+        'os.environ.get("CCCC_BIN")',
+        f'os.environ.get("CCCC_BIN", {str(binary.resolve())!r})',
+    )
     if not dest.is_file() or dest.read_text(encoding="utf-8") != text:
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(text, encoding="utf-8")
@@ -210,7 +215,7 @@ def python_interpreter() -> str:
 
 
 def hook_command(python: str, hook: Path, harness: str) -> str:
-    return f"CCCC_HARNESS={harness} {python} {hook}"
+    return f"CCCC_HARNESS={harness} {shlex.join([python, str(hook)])}"
 
 
 def write_user_config(home: Path) -> str:
@@ -452,7 +457,7 @@ def merge_hermes_yaml(path: Path, text: str, command: str) -> str:
 def wire_hermes(home: Path, cmd_for: Callable[[str], str]) -> str:
     path = home / ".hermes" / "config.yaml"
     command = cmd_for("hermes")
-    block = HERMES_BLOCK.format(command=command, matcher=HERMES_MATCHER)
+    block = HERMES_BLOCK.format(command=json.dumps(command), matcher=HERMES_MATCHER)
     if not path.is_file():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(block, encoding="utf-8")
@@ -590,7 +595,7 @@ def wire_all(home: Path, python: str, hook: Path) -> dict[str, str]:
 def main() -> int:
     home = Path.home()
     binary, binary_status = ensure_binary(home)
-    hook = install_adapter(home)
+    hook = install_adapter(home, binary)
     python = python_interpreter()
 
     print(f"cccc binary: {binary} ({binary_status})")

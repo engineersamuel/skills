@@ -1,8 +1,6 @@
 # Agent Skills
 
-Portable skills for repository delivery, evidence audits, test-suite cleanup,
-interface quality, goal-loop prompts, Trellage profile routing, and RunWisp
-job-package authoring.
+Portable skills for repository delivery, evidence audits, test-suite cleanup, interface quality, goal-loop prompts, Trellage profile routing, and RunWisp job-package authoring. `mastermind` coordinates explicitly requested, bounded, cross-harness work through installed Trx and Herdr capabilities.
 
 - `audit-ro` coordinates a complete, read-only codebase audit for materially useful simplifications.
 - `clean-tests` removes low-value tests while retaining stable, repository-owned behavioral contracts.
@@ -12,12 +10,10 @@ job-package authoring.
 - `herdr-canvas` maintains an explicitly requested live Herdr terminal canvas.
 - `runwisp-job-authoring` creates, changes, diagnoses, and validates filesystem job packages built for [`runwisp-jobkit`](https://github.com/engineersamuel/runwisp-jobkit).
 - `trellage-guide` matches an intent to Trellage profiles and workflows, generates prompt choices, and prepares confirmed terminal or Herdr handoff.
+- `mastermind` coordinates one-writer implementation and independent, evidence-based reviews across available harnesses.
 - `ui-guidelines` applies practical visual, motion, typography, color, accessibility, layout, and writing rules to UI, frontend, HTML, and CSS work.
 
-This repository also ships repository tooling, not a skill: a user-level complexity gate that runs
-[`cccc`](https://github.com/moznion/cccc) after each agent edit and makes the model simplify a
-function that goes over the limit. It wires Claude Code, Codex, Copilot CLI, Grok, Cursor, Pi, and
-Hermes with one command:
+This repository also ships repository tooling, not a skill: a user-level complexity gate that runs [`cccc`](https://github.com/moznion/cccc) after each agent edit and makes the model simplify a function that goes over the limit. It wires Claude Code, Codex, Copilot CLI, Grok, Cursor, Pi, and Hermes with one command:
 
 ```bash
 ./tools/cccc/install.sh
@@ -46,48 +42,27 @@ Canvas on. Use $herdr-canvas to maintain a live Herdr canvas for this task.
 Use $runwisp-job-authoring to create and validate this RunWisp job package.
 Use $finish to commit this work and monitor its PR until merged.
 Use $trellage-guide to choose a Trellage profile and generate prompt choices.
+Use $mastermind to coordinate this explicitly requested work across available harnesses.
 Use $ui-guidelines to improve this UI or HTML.
 ```
 
 `clean-tests` will:
 
-- Remove tests that only prove feature presence, registration, provider shapes,
-  type-system guarantees, or volatile UI details.
-- Keep meaningful repository-owned input, output, state, error, side-effect,
-  adapter, and regression contracts.
-- Remove orphaned mocks, fixtures, snapshots, helpers, and test-only
-  dependencies, then run the repository's applicable checks.
+- Remove tests that only prove feature presence, registration, provider shapes, type-system guarantees, or volatile UI details.
+- Keep meaningful repository-owned input, output, state, error, side-effect, adapter, and regression contracts.
+- Remove orphaned mocks, fixtures, snapshots, helpers, and test-only dependencies, then run the repository's applicable checks.
 
 `goal-me` will:
 
-- Discover available inputs and checks, then interview until you confirm one
-  coherent outcome, its artifacts, constraints, and at least three independent
-  criteria. Any deliverable can use commands or evidence-based scoring rubrics.
-- Define observable targets, verification methods, required pass/fail checks,
-  and a compact action catalog. Scores start uninitialized.
-- Write only the filled prompt to `GOAL.md` in the current directory, or an
-  unused `GOAL-<four lowercase hex digits>.md` on collision, and report its path
-  without executing it.
+- Discover available inputs and checks, then interview until you confirm one coherent outcome, its artifacts, constraints, and at least three independent criteria. Any deliverable can use commands or evidence-based scoring rubrics.
+- Define observable targets, verification methods, required pass/fail checks, and a compact action catalog. Scores start uninitialized.
+- Write only the filled prompt to `GOAL.md` in the current directory, or an unused `GOAL-<four lowercase hex digits>.md` on collision, and report its path without executing it.
 
-The embedded loop measures before acting, prioritizes the weakest criterion
-and its prerequisites, verifies changes, and retains improvements without
-regressions. It recovers unsuccessful changes while preserving unrelated work.
-Success definitions stay fixed; measurement-tool improvements require separate
-reliability evidence and comparable before/after checks.
+The embedded loop measures before acting, prioritizes the weakest criterion and its prerequisites, verifies changes, and retains improvements without regressions. It recovers unsuccessful changes while preserving unrelated work. Success definitions stay fixed; measurement-tool improvements require separate reliability evidence and comparable before/after checks.
 
-Execution defaults to bounded convergence: `FINAL` requires every criterion to
-score at least 8/10 and every required check to pass. Otherwise it records
-`STOPPED` after 20 iterations, 5 consecutive attempts without verified progress,
-or an external blocker that prevents further in-scope work. You can choose other
-limits during authoring. Resumption reverifies the artifact and preserves
-counters. Baseline/current evidence, the five most recent attempts, and at most
-eight learnings stay in the same file. Stopping reports include results,
-retained changes, remaining gaps, and the next useful action.
+Execution defaults to bounded convergence: `FINAL` requires every criterion to score at least 8/10 and every required check to pass. Otherwise it records `STOPPED` after 20 iterations, 5 consecutive attempts without verified progress, or an external blocker that prevents further in-scope work. You can choose other limits during authoring. Resumption reverifies the artifact and preserves counters. Baseline/current evidence, the five most recent attempts, and at most eight learnings stay in the same file. Stopping reports include results, retained changes, remaining gaps, and the next useful action.
 
-The measurement, action catalog, before/after comparison, and stopping conditions
-build on [goal-md](https://github.com/jmilinovich/goal-md) and its
-[GOAL.md](https://github.com/jmilinovich/goal-md/blob/main/GOAL.md), adapted to
-`goal-me`'s single-file handoff and weakest-first loop.
+The measurement, action catalog, before/after comparison, and stopping conditions build on [goal-md](https://github.com/jmilinovich/goal-md) and its [GOAL.md](https://github.com/jmilinovich/goal-md/blob/main/GOAL.md), adapted to `goal-me`'s single-file handoff and weakest-first loop.
 
 `justify` will:
 
@@ -105,12 +80,9 @@ build on [goal-md](https://github.com/jmilinovich/goal-md) and its
 
 `ui-guidelines` will:
 
-- Be eligible for automatic invocation when work involves a user interface,
-  frontend component, web page, HTML, or CSS.
-- Apply focused rules for interface geometry, motion, typography, color,
-  accessibility, layout, and UI writing.
-- Preserve stronger repository, product, correctness, and accessibility
-  requirements when a general guideline does not fit.
+- Be eligible for automatic invocation when work involves a user interface, frontend component, web page, HTML, or CSS.
+- Apply focused rules for interface geometry, motion, typography, color, accessibility, layout, and UI writing.
+- Preserve stronger repository, product, correctness, and accessibility requirements when a general guideline does not fit.
 
 You’re ready to use the installed skills.
 
@@ -127,6 +99,7 @@ npx skills add engineersamuel/skills --skill herdr-canvas --agent claude-code
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent claude-code
 npx skills add engineersamuel/skills --skill finish --agent claude-code
 npx skills add engineersamuel/skills --skill trellage-guide --agent claude-code
+npx skills add engineersamuel/skills --skill mastermind --agent claude-code
 npx skills add engineersamuel/skills --skill ui-guidelines --agent claude-code
 ```
 
@@ -141,6 +114,7 @@ npx skills add engineersamuel/skills --skill herdr-canvas --agent codex
 npx skills add engineersamuel/skills --skill runwisp-job-authoring --agent codex
 npx skills add engineersamuel/skills --skill finish --agent codex
 npx skills add engineersamuel/skills --skill trellage-guide --agent codex
+npx skills add engineersamuel/skills --skill mastermind --agent codex
 npx skills add engineersamuel/skills --skill ui-guidelines --agent codex
 ```
 
@@ -170,9 +144,7 @@ npx skills add 'engineersamuel/skills#v1.0.0' --skill justify --agent codex
 
 Pinned upgrades require reinstalling with the new tag, for example `#v1.1.0`. `skills update` preserves the existing tag.
 
-Pin `clean-tests`, `runwisp-job-authoring`, `goal-me`, or `ui-guidelines` only
-to a future release tag that contains it. This repository change does not
-create or move a tag.
+Pin `clean-tests`, `runwisp-job-authoring`, `goal-me`, or `ui-guidelines` only to a future release tag that contains it. This repository change does not create or move a tag.
 
 ## Requirements
 
@@ -180,9 +152,7 @@ Local repository audits need no extra integration. External claims require an av
 
 `audit-ro` is user-invoked only. It uses read-only workers when available, keeps its audit record outside the target repository, and does not run tests or modify the worktree.
 
-`clean-tests` uses the target repository's existing tools and adds no external
-provider dependency. It tests behavior owned by the repository instead of
-simulating provider compatibility.
+`clean-tests` uses the target repository's existing tools and adds no external provider dependency. It tests behavior owned by the repository instead of simulating provider compatibility.
 
 `justify` fails closed when a required capability is absent. It reports the missing pass instead of fabricating research or simulated council output.
 
@@ -190,10 +160,7 @@ simulating provider compatibility.
 
 `goal-me` needs write access to the current working directory. It uses an installed `grill-me` skill when one is present.
 
-`herdr-canvas` requires Herdr, macOS, and the separately installed canvas MCP
-application. The portable skill does not weaken MCP permissions or sandbox
-enforcement. Install the application and persistent Copilot activation from
-[`tools/canvas`](tools/canvas/README.md).
+`herdr-canvas` requires Herdr, macOS, and the separately installed canvas MCP application. The portable skill does not weaken MCP permissions or sandbox enforcement. Install the application and persistent Copilot activation from [`tools/canvas`](tools/canvas/README.md).
 
 Install or upgrade Herdr Canvas for Copilot CLI, Claude Code, Codex, and Pi:
 
@@ -201,9 +168,42 @@ Install or upgrade Herdr Canvas for Copilot CLI, Claude Code, Codex, and Pi:
 mise run herdr-canvas
 ```
 
-`trellage-guide` requires a current Trellage installation whose `trx guide`
-help reports the schema version 1 JSON API. Model authentication and profile
-readiness remain owned by Trellage.
+`trellage-guide` requires a current Trellage installation whose `trx guide` help reports the schema version 1 JSON API. Model authentication and profile readiness remain owned by Trellage.
+
+`mastermind` requires installed Trx and Herdr versions with the needed local capabilities. It checks documented commands, available harnesses and profiles, dry-run output, and inventory readiness before launching workers. Review launches use the user's requested scope and a frozen worktree snapshot. Follow the capability checks in `skills/mastermind/SKILL.md` and the run record protocol in `skills/mastermind/references/fleet-protocol.md`. The skill uses only local Trx and Herdr control commands, not a provider-specific agent API.
+
+From this checkout, use `mise run trx` to run the installed `trx` command. All arguments are forwarded unchanged, and interactive commands use the terminal directly:
+
+```fish
+mise run trx guide --help
+```
+
+This task requires `trx` on `PATH`; it does not install or update Trellage. Available flags depend on the installed Trellage version.
+
+### Retest local Mastermind skill changes in Copilot
+
+Prepare the Trellage source runtime and install its router from the Trellage checkout first:
+
+```fish
+scripts/install-source-runtime.sh --prepare
+prototypes/trellage-router/install.sh
+trx --help
+trx run --help
+trx list --json
+```
+
+Check each intended harness and profile with `trx run HARNESS PROFILE... --dry-run` and `trx inventory HARNESS PROFILE... --json`; launch only pairs whose inventory reports `healthy`. Omit the profile to use the harness default. Then, from the same worktree where you will run Copilot, install the skill from the absolute path of the updated skills checkout:
+
+```fish
+npx skills add /absolute/path/to/skills-checkout --skill mastermind --agent github-copilot -y
+npx skills remove trx --agent github-copilot -y
+```
+
+This selects local unpublished changes. Installing `engineersamuel/skills` or running `trx skills update` fetches the remote source, not uncommitted changes in your local checkout. Do not expect either to install a local candidate. The portable skill is now `mastermind`; the CLI remains `trx`. Remove an older global `trx` skill separately with `npx skills remove trx -g -y` if `npx skills list -g` reports one. Do not remove other installed skills.
+
+Start a fresh `trx run copilot PROFILE` session inside Herdr. Use `/skills` and `/env` to check that `mastermind` is enabled and inspect its source. If another copy wins discovery, replace or disable that copy explicitly; do not assume the installer path is the path Copilot loaded. Check `SKILL.md` and its reference files against the source checkout. The new copy must describe documented capability checks, a local run record, an absolute deadline for each action, and approval boundaries. A fresh session avoids old skill text already present in conversation history.
+
+For a trial that waits for human approval, keep Copilot in interactive mode. Automatic continuation messages never count as approval.
 
 ## Validate
 

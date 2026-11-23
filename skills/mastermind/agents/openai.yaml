@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mastermind"
+  short_description: "Coordinate bounded cross-harness reviews"
+  default_prompt: "Use $mastermind to coordinate this explicitly requested work with Trx."
